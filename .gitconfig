@@ -1,0 +1,33 @@
+[user]
+    email = reflect.results@gmail.com
+    name = KoharaKazuya
+[core]
+    excludesfile = ~/.gitignore
+    autocrlf = input
+[push]
+    default = simple
+[gui]
+    encoding = UTF-8
+[color]
+    ui = true
+[alias]
+    a  = add .
+    b  = branch
+    c  = commit --message
+    d  = diff
+    l  = log --oneline
+    m  = merge
+    s  = status --short
+    co = checkout
+    cp = cherry-pick
+    dc = diff --cached
+    fs = flow feature start
+    ff = flow feature finish
+    ms = merge --squash
+    rs = flow release start
+    rf = flow release finish
+    ts = "!sh -c \"git checkout -b temporary/`git b | grep '* ' | cut -f 2 -d ' '`/`git show HEAD | head -n 1 | cut -f 2 -d ' '`\""
+    tf = "!message=$1 sh -c \"current=`git b | grep '* ' | cut -f 2 -d ' '`; git co `git b | grep '* ' | cut -f 2 -d '/'` && git merge --squash --no-commit \\$current && git c \\$message && git b -D \\$current\""
+
+[include]
+    path = ~/.gitconfig.local
