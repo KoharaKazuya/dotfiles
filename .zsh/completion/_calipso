@@ -1,0 +1,14 @@
+#compdef calipso
+
+_calipso() {
+    if (( CURRENT == 2 )); then
+        local -a subcommands
+        subcommands=(
+            'server'
+            'site'
+            'themes'
+            'modules'
+            )
+        _describe -t commands "calipso subcommand" subcommands
+    fi
+}

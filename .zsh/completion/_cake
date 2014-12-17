@@ -1,0 +1,7 @@
+#compdef cake
+
+_cake () {
+    if [ -f Cakefile ]; then
+        compadd `cake | grep '^cake ' | sed -e "s/cake \([^ ]*\) .*/\1/" | grep -v '^$'`
+    fi
+}
