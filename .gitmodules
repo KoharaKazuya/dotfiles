@@ -10,3 +10,6 @@
 [submodule ".zsh/zsh-notify"]
 	path = .zsh/zsh-notify
 	url = git@github.com:marzocchi/zsh-notify.git
+[submodule ".tmux/tmux-powerline"]
+	path = .tmux/tmux-powerline
+	url = git@github.com:erikw/tmux-powerline.git
