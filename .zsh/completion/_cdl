@@ -1,0 +1,7 @@
+#compdef cdl
+
+_cdl() {
+  for link in $HOME/links/*; do
+    _values -w "links" $(basename $link)
+  done
+}

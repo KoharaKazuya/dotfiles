@@ -94,6 +94,10 @@ function mkcd() {
 function zman() {
     PAGER="less -g -s '+/^       "$1"'" man zshall
 }
+## cd ~/links/*
+function cdl() {
+    cd ~/links/"$1"
+}
 
 # お遊び
 ## command not found を楽しくする
