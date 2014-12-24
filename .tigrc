@@ -1,0 +1,12 @@
+# like vim
+bind generic <Ctrl-f> scroll-page-down
+bind generic <Ctrl-b> scroll-page-up
+
+# user friendly
+bind diff <Up> scroll-page-up
+bind diff <Down> scroll-page-down
+
+# 自動改行
+set wrap-lines = yes
+bind generic <Left> view-close
+bind generic <Right> enter
