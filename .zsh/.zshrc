@@ -48,16 +48,6 @@ alias rm="error \"Don't use rm command, too dangerous!\""
 # zsh highlight
 source $ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# source highlight
-if builtin command -v source-highlight > /dev/null ; then
-    function highlight() {
-        if [ "$#" = "2" ]; then
-            source-highlight -f esc256 -s "$1" -i "$2" -o STDOUT | less -R
-        else
-            error "usage: highlight <source format> <input file>"
-        fi
-    }
-fi
 
 # zsh-autosuggestions (like fish)
 # source ~/.zsh/zsh-autosuggestions/autosuggestions.zsh
