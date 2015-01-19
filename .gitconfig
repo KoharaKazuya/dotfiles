@@ -18,6 +18,7 @@
     l  = log --oneline
     m  = merge
     s  = status --short
+    ca = commit --amend
     co = checkout
     cp = cherry-pick
     dc = diff --cached
