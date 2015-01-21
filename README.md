@@ -2,6 +2,4 @@
 
 Private dotfiles for KoharaKazuya.
 
-    git clone git@github.com:KoharaKazuya/dotfiles.git
-    git submodule init
-    git submodule update
+    curl https://raw.githubusercontent.com/KoharaKazuya/dotfiles/master/install.sh | sh
