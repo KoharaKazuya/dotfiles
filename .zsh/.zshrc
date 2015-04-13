@@ -33,17 +33,6 @@ autoload -Uz add-zsh-hook
 ## パスのディレクトリ単位で ^w が行えるように
 WORDCHARS=${WORDCHARS:s/\//}
 
-# キーバインド
-bindkey '^w' beginning-of-line
-bindkey '^e' end-of-line
-bindkey '^r' backward-kill-word
-bindkey '^s' push-line
-bindkey '^y' redo
-bindkey '^z' undo
-stty start undef
-stty stop undef
-stty eof ^Q
-
 # 補完設定
 fpath=($ZDOTDIR/completion $ZDOTDIR/zsh-completions/src $fpath)
 autoload -U compinit
