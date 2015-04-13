@@ -42,9 +42,6 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 ## 補完候補をハイライトする
 zstyle ':completion:*:default' menu select=2
 
-# rm を無効化
-alias rm="error \"Don't use rm command, too dangerous!\""
-
 # zsh highlight
 source $ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
