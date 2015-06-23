@@ -47,11 +47,11 @@ source $ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 
 # zsh-autosuggestions (like fish)
-# source ~/.zsh/zsh-autosuggestions/autosuggestions.zsh
-# zle-line-init() {
-#     zle autosuggest-start
-# }
-# zle -N zle-line-init
+source ~/.zsh/zsh-autosuggestions/autosuggestions.zsh
+zle-line-init() {
+    zle autosuggest-start
+}
+zle -N zle-line-init
 
 # peco hitory
 if builtin command -v peco > /dev/null ; then
