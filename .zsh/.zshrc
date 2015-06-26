@@ -134,6 +134,13 @@ crontab() {
   command crontab ${1+"$@"}
 }
 
+## rm が危険なので gomi で置き換える
+if builtin command -v gomi > /dev/null ; then
+  alias rm=gomi
+else
+  alias rm='warning "rm is dangerous.\nYou must use \`gomi\` command. See \"https://github.com/b4b4r07/gomi\".\nAnd put it into a directory on \$PATH."'
+fi
+
 ## zsh から Mac の通知センターを利用する
 export SYS_NOTIFIER="$(builtin command -v terminal-notifier)"
 if [ $SYS_NOTIFIER ]; then
