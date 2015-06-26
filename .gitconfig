@@ -4,6 +4,8 @@
 [core]
     excludesfile = ~/.gitignore
     autocrlf = input
+    quotepath = false
+    precomposeunicode = true
 [push]
     default = simple
 [gui]
