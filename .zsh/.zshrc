@@ -28,6 +28,8 @@ setopt share_history
 setopt transient_rprompt
 ## プロンプト変数内で変数参照を有効にする
 setopt prompt_subst
+## 補完時に濁点・半濁点を <3099> <309a> のように表示させない
+setopt combining_chars
 ## フック
 autoload -Uz add-zsh-hook
 ## パスのディレクトリ単位で ^w が行えるように
