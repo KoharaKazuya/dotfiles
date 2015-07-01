@@ -74,6 +74,16 @@ if builtin command -v peco > /dev/null ; then
     bindkey '^f' peco-select-history
 fi
 
+# Git のルートディレクトリへ簡単に移動できるようにする関数
+function git-root() {
+  if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+    cd `git rev-parse --show-toplevel`
+  else
+    echo 'cannot find .git' >&2
+    ! :
+  fi
+}
+
 # zmv (一括 mv)
 autoload -Uz zmv
 alias ren='noglob zmv -W'
