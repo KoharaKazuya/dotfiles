@@ -85,9 +85,3 @@ function zman() {
 function cdl() {
     cd ~/links/"$1"
 }
-
-# お遊び
-## command not found を楽しくする
-function command_not_found_handler() {
-    echo "(▽▽) '$YELLOW$BOLD$0$NORMAL'？　そのようなコマンドない！"
-}
