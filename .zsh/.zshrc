@@ -84,6 +84,20 @@ function git-root() {
   fi
 }
 
+# 絶対パスを記録する cd
+function cd() {
+  if [ $# -eq 1 ]; then
+    builtin cd $1
+    if [ $? -ne 0 ]; then
+      return 1
+    fi
+    echo cd $PWD >> $HISTFILE
+    fc -R
+  else
+    builtin cd $*
+  fi
+}
+
 # zmv (一括 mv)
 autoload -Uz zmv
 alias ren='noglob zmv -W'
