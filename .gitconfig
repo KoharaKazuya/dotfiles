@@ -7,7 +7,9 @@
     quotepath = false
     precomposeunicode = true
 [push]
-    default = simple
+    default = current
+[remote]
+    pushDefault = origin
 [gui]
     encoding = UTF-8
 [color]
