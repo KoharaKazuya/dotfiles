@@ -85,3 +85,7 @@ function zman() {
 function cdl() {
     cd ~/links/"$1"
 }
+## cd ~/projects/*
+function cdp() {
+    cd ~/projects/"$1"
+}
