@@ -30,6 +30,8 @@ error() {
     echo -e "$RED$BOLD$*$NORMAL" >&2
     return 1
 }
+## ls -la
+alias ll='ls -la'
 ## ディレクトリ移動時に ls を実行する
 chpwd() {
     ls_abbrev
