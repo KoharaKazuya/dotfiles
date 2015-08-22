@@ -1,0 +1,7 @@
+#compdef cdp
+
+_cdp() {
+  for link in $HOME/projects/*; do
+    _values -w "projects" $(basename $link)
+  done
+}
