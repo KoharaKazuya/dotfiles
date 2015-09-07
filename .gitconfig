@@ -20,7 +20,7 @@
     c  = commit --message
     d  = diff
     l  = log --oneline
-    m  = merge
+    m  = merge --no-ff
     s  = status --short
     ca = commit --amend
     co = checkout
@@ -33,7 +33,7 @@
     rf = flow release finish
     ts = "!sh -c \"git checkout -b temporary/`git b | grep '* ' | cut -f 2 -d ' '`/`git show HEAD | head -n 1 | cut -f 2 -d ' '`\""
     tf = "!message=$1 sh -c \"current=`git b | grep '* ' | cut -f 2 -d ' '`; git co `git b | grep '* ' | cut -f 2 -d '/'` && git merge --squash --no-commit \\$current && git c \\$message && git b -D \\$current\""
-    mc = !git branch --merged | grep -v master | grep -v develop | grep -v \\* | xargs -I{} sh -c 'git push origin :{} && git branch -d {}'
+    mc = !git branch --merged | grep -v master | grep -v develop | grep -v \\* | xargs -I{} sh -c 'git branch --all | grep origin/{} > /dev/null && git push origin :{} && git branch -d {}'
 
 [include]
     path = ~/.gitconfig.local
