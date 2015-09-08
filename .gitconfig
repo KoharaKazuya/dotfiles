@@ -31,7 +31,7 @@
     ms = merge --squash
     rs = flow release start
     rf = flow release finish
-    mc = !git branch --merged | grep -v master | grep -v develop | grep -v \\* | xargs -I{} sh -c 'git branch --all | grep origin/{} > /dev/null && git push origin :{} && git branch -d {}'
+    mc = !(git branch --merged | grep -v master | grep -v develop | grep -v \\* && git branch --all | grep remotes/origin/ | sed -e 's%remotes/origin/%%') | sort | uniq -d | xargs -I{} sh -c 'git push origin :{} && git branch -d {}'
 
 [include]
     path = ~/.gitconfig.local
