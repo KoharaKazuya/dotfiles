@@ -33,6 +33,7 @@
     rf = flow release finish
     mc = !(git branch --merged | grep -v master | grep -v develop | grep -v \\* && git branch --all | grep remotes/origin/ | sed -e 's%remotes/origin/%%') | sort | uniq -d | xargs -I{} sh -c 'git push origin :{} && git branch -d {}'
     cc = !"if [ -z \"$(git s)\" ]; then git cod && git pull && git mc; fi"
+    cob = checkout -b
 
 [include]
     path = ~/.gitconfig.local
