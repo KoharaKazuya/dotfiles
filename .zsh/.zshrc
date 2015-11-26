@@ -45,7 +45,7 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*:default' menu select=2
 
 # zsh highlight
-source $ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source $ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 
 # zsh-autosuggestions (like fish)
