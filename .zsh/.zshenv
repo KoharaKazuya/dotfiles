@@ -21,17 +21,16 @@ path=(
 alias reload='exec zsh -l'
 ## 強調 echo
 success() {
-    echo -e "$GREEN$BOLD$*$NORMAL"
+    echo -e "${fg_bold[green]}$*${reset_color}"
 }
 warning() {
-    echo -e "$YELLOW$BOLD$*$NORMAL" >&2
+    echo -e "${fg_bold[yellow]}$*${reset_color}" >&2
 }
 error() {
-    echo -e "$RED$BOLD$*$NORMAL" >&2
+    echo -e "${fg_bold[red]}$*${reset_color}" >&2
     return 1
 }
-## ls -la
-alias ll='ls -la'
+
 ## ディレクトリ移動時に ls を実行する
 chpwd() {
     ls_abbrev
@@ -46,12 +45,8 @@ ls_abbrev() {
     opt_ls=('-aCF' '--color=always')
     case "${OSTYPE}" in
         freebsd*|darwin*)
-            if type gls > /dev/null 2>&1; then
-                cmd_ls='gls'
-            else
-                # -G : Enable colorized output.
-                opt_ls=('-aCFG')
-            fi
+              # -G : Enable colorized output.
+              opt_ls=('-aCFG')
             ;;
     esac
 
@@ -60,34 +55,12 @@ ls_abbrev() {
 
     local ls_lines=$(echo "$ls_result" | wc -l | tr -d ' ')
 
-    if [ $ls_lines -gt 10 ]; then
-        echo "$ls_result" | head -n 5
+    if [ $ls_lines -gt 5 ]; then
+        echo "$ls_result" | head -n 3
         echo '...'
-        echo "$ls_result" | tail -n 5
+        echo "$ls_result" | tail -n 2
         echo "$(command ls -1 -A | wc -l | tr -d ' ') files exist"
     else
         echo "$ls_result"
     fi
-}
-## mkdir + cd
-function mkcd() {
-  if [[ -d $1 ]]; then
-    echo "It already exsits! Cd to the directory."
-    cd $1
-  else
-    echo "Created the directory and cd to it."
-    mkdir -p $1 && cd $1
-  fi
-}
-## zsh の man から調べる
-function zman() {
-    PAGER="less -g -s '+/^       "$1"'" man zshall
-}
-## cd ~/links/*
-function cdl() {
-    cd ~/links/"$1"
-}
-## cd ~/projects/*
-function cdp() {
-    cd ~/projects/"$1"
 }

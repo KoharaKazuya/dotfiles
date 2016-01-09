@@ -1,59 +1,23 @@
-# 変数設定
-## フォント
-local NORMAL='\e[0m'
-### 文字色
-local BLACK='\e[30m'
-local RED='\e[31m'
-local GREEN='\e[32m'
-local YELLOW='\e[33m'
-local BLUE='\e[34m'
-local MAGENTA='\e[35m'
-local CYAN='\e[35m'
-local WHITE='\e[36m'
-### 装飾
-local BOLD='\e[1m'
+# Zim
+if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
+  source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
+fi
+## Zim Customize
+### ヒストリファイルのディレクトリを変更する
+HISTFILE="$HOME/.zsh_history"
+
 
 # オプション設定
-setopt auto_pushd
-setopt pushd_ignore_dups
-## 履歴設定
-HISTFILE="$HOME/.zsh_history"
-HISTSIZE=32768
-SAVEHIST=32768
-setopt hist_ignore_all_dups
-setopt hist_reduce_blanks
-setopt hist_verify
-setopt share_history
-##
+## 色変数を使えるように
+autoload -Uz colors && colors
+## 右プロンプトを最新行にしか表示しない
 setopt transient_rprompt
-## プロンプト変数内で変数参照を有効にする
-setopt prompt_subst
 ## 補完時に濁点・半濁点を <3099> <309a> のように表示させない
 setopt combining_chars
 ## フック
 autoload -Uz add-zsh-hook
 ## パスのディレクトリ単位で ^w が行えるように
 WORDCHARS=${WORDCHARS:s/\//}
-
-# 補完設定
-fpath=($ZDOTDIR/completion $ZDOTDIR/zsh-completions/src $fpath)
-autoload -U compinit
-compinit -u -d $HOME/.zcompdump
-## 大文字小文字を無視
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-## 補完候補をハイライトする
-zstyle ':completion:*:default' menu select=2
-
-# zsh highlight
-# source $ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-
-# zsh-autosuggestions (like fish)
-source ~/.zsh/zsh-autosuggestions/autosuggestions.zsh
-zle-line-init() {
-    zle autosuggest-start
-}
-zle -N zle-line-init
 
 # peco hitory
 if builtin command -v peco > /dev/null ; then
@@ -74,58 +38,31 @@ if builtin command -v peco > /dev/null ; then
     bindkey '^f' peco-select-history
 fi
 
-# Git のルートディレクトリへ簡単に移動できるようにする関数
-function git-root() {
-  if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-    cd `git rev-parse --show-toplevel`
-  else
-    echo 'cannot find .git' >&2
-    ! :
-  fi
-}
-
 # 絶対パスを記録する cd
 function cd() {
+  # 引数を2つとる cd (zsh の独自機能) の場合はフックしない
   if [ $# -eq 1 ]; then
+    # 再帰を防ぐためにビルトインの cd を呼び出し
     builtin cd $1
+    # cd に失敗したら終了
     if [ $? -ne 0 ]; then
       return 1
     fi
-    echo cd $PWD >> $HISTFILE
-    fc -R
+    # シェルからの直接呼び出しの場合のみ history を書き換え
+    if [ ${#funcstack[*]} -eq 1 ]; then
+      echo cd $PWD >> $HISTFILE
+      fc -R
+    fi
   else
     builtin cd $*
   fi
 }
 
-# zmv (一括 mv)
-autoload -Uz zmv
-alias ren='noglob zmv -W'
-
 # 環境依存の設定ファイルを読み込む
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
-# プロンプト設定
-## 基本設定
-PROMPT="%F{$PROMPT_COLOR}%n@%m%f %(?,,%F{9})$%f "
-RPROMPT="%F{$PROMPT_COLOR}[%`expr $COLUMNS / 3`<...<%~]%f"
-## VCS 情報を右プロンプトに表示する
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:*' formats '(%s)-[%b]'
-zstyle ':vcs_info:*' actionformats '(%s)-[%b|%a]'
-### リポジトリの変更を検知
-autoload -Uz is-at-least
-if is-at-least 4.3.10; then
-  zstyle ':vcs_info:git:*' check-for-changes true
-  zstyle ':vcs_info:git:*' stagedstr "%F{red}"
-  zstyle ':vcs_info:git:*' unstagedstr "%F{red}"
-  zstyle ':vcs_info:git:*' formats '%c%u(%s)-[%b]%f'
-  zstyle ':vcs_info:git:*' actionformats '%c%u(%s)-[%b|%a]'
-fi
-### 右プロンプトに git 情報を追加
-add-zsh-hook precmd vcs_info
-RPROMPT="%F{green}\${vcs_info_msg_0_}%f $RPROMPT"
+# 右プロンプトにホスト名を表示する
+RPROMPT="%{$reset_color%}<%n@%{$fg_bold[$PROMPT_COLOR]%}%m%{$reset_color%}> "
 
 # ターミナルのタイトルを変更する
 case "${TERM}" in
@@ -161,10 +98,8 @@ crontab() {
 }
 
 ## rm が危険なので gomi で置き換える
-if builtin command -v gomi > /dev/null ; then
-  alias rm=gomi
-else
-  alias rm='warning "rm is dangerous.\nYou must use \`gomi\` command. See \"https://github.com/b4b4r07/gomi\".\nAnd put it into a directory on \$PATH."'
+if ! (type rm | grep safe-rm > /dev/null); then
+  warning 'You should `brew install safe-rm && reload`!\nThe original rm is too dangerous.'
 fi
 
 ## zsh から Mac の通知センターを利用する
@@ -173,19 +108,3 @@ if [ $SYS_NOTIFIER ]; then
   export NOTIFY_COMMAND_COMPLETE_TIMEOUT=10
   source $ZDOTDIR/zsh-notify/notify.plugin.zsh
 fi
-
-# 矢印キーで「上へ」「戻る」を実現
-cdup() {
-    cd ..
-    zle reset-prompt
-}
-cdback() {
-    popd
-    zle reset-prompt
-}
-## M-↑でcdup
-zle -N cdup
-bindkey '^[[1;5A' cdup
-## M-←でpopd
-zle -N cdback
-bindkey '^[[1;5D' cdback
