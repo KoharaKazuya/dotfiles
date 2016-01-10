@@ -5,6 +5,9 @@ fi
 ## Zim Customize
 ### ヒストリファイルのディレクトリを変更する
 HISTFILE="$HOME/.zsh_history"
+### Mac だと chmod のオプション (--preserve-root) がない (BSD?) ので、エイリアスを解除
+unalias chmod
+unalias chown
 
 
 # オプション設定
