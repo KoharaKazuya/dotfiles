@@ -65,7 +65,7 @@ function cd() {
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 # 右プロンプトにホスト名を表示する
-RPROMPT="%{$reset_color%}<%n@%{$fg_bold[$PROMPT_COLOR]%}%m%{$reset_color%}> "
+RPROMPT="%{$reset_color%}<%n@%{$fg_bold[$PROMPT_COLOR]%}%m%{$reset_color%}>"
 
 # ターミナルのタイトルを変更する
 case "${TERM}" in
