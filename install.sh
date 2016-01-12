@@ -23,3 +23,14 @@ do
     ln -s $CONTAINER/dotfiles/$dotfile ~/
   fi
 done
+
+if type /bin/zsh > /dev/null 2>&1; then
+  if [ "$SHELL" = /bin/zsh ]; then
+    exec zsh -l
+  else
+    echo 'change your login shell: `chsh -s /bin/zsh`'
+  fi
+else
+
+  echo 'install zsh'
+fi
