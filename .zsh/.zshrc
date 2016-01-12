@@ -101,8 +101,10 @@ crontab() {
 }
 
 ## rm が危険なので gomi で置き換える
-if ! (type rm | grep safe-rm > /dev/null); then
-  warning 'You should `brew install safe-rm && reload`!\nThe original rm is too dangerous.'
+if builtin command -v gomi > /dev/null ; then
+  alias rm=gomi
+else
+  alias rm='warning "rm is dangerous.\nYou must use \`gomi\` command. See \"https://github.com/b4b4r07/gomi\".\nAnd put it into a directory on \$PATH."; ! :'
 fi
 
 ## zsh から Mac の通知センターを利用する
