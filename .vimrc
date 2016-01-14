@@ -1,5 +1,5 @@
 " 表示設定
-colorscheme ron
+colorscheme desert
 syntax on         " コードの色分け
 set tabstop=2     " インデントの表示をスペース２つ分に
 set shiftwidth=2  " インデントの挿入をスペース２つ分に
