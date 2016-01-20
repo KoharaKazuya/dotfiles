@@ -35,9 +35,11 @@
     mc = !(git cod && git branch --merged | grep -v \\* && git branch --all | grep remotes/origin/ | sed -e 's%remotes/origin/%%') | sort | uniq -d | xargs -I{} sh -c 'git push origin :{} && git branch -d {}'
     cc = !"if [ -z \"$(git d)\" ]; then git cod && git pull && git mc; else echo 'Not commited files' >&2; ! :; fi"
     cob = checkout -b
-    cod = !git checkout $(git default-branch)
-    reb = ![ -z "$(git d)" ] && CURRENT_BRANCH=$(git b | grep '*' | cut -d' ' -f2) && git cc && git co $CURRENT_BRANCH && [ -z "$(git b -a | grep 'remotes/' | grep $CURRENT_BRANCH)" ] && git rebase $(git default-branch)
-    default-branch = !echo master
+    cod = !git checkout $(git config private.default-branch)
+    reb = ![ -n \"$(git config --local private.default-branch)\" ] && [ -z "$(git d)" ] && CURRENT_BRANCH=$(git b | grep '*' | cut -d' ' -f2) && git cc && git co $CURRENT_BRANCH && [ -z "$(git b -a | grep 'remotes/' | grep $CURRENT_BRANCH)" ] && git rebase $(git config private.default-branch)
+
+[private]
+    default-branch = master
 
 [include]
     path = ~/.gitconfig.local
