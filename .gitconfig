@@ -24,7 +24,7 @@
     m  = merge --no-ff
     s  = status --short
     ca = commit --amend
-    co = checkout
+    co = checkout --quiet
     cp = cherry-pick
     dc = diff --cached
     fs = flow feature start
@@ -33,10 +33,13 @@
     rs = flow release start
     rf = flow release finish
     mc = !(git cod && git branch --merged | grep -v \\* && git branch --all | grep remotes/origin/ | sed -e 's%remotes/origin/%%') | sort | uniq -d | xargs -I{} sh -c 'git push origin :{} && git branch -d {}'
-    cc = !"if [ -z \"$(git d)\" ]; then git cod && git pull && git mc; else echo 'Not commited files' >&2; ! :; fi"
+    cc = !"if [ -z \"$(git d)\" ]; then git cod && git pull && git mc && git aff; else echo 'Not commited files' >&2; ! :; fi"
+    aff = !CB=$(git current-branch) && git other-branches | xargs -I{} env CB=$CB sh -c 'git co {} && git merge --ff-only --quiet $CB || echo fast-forward abort: $CB' 2> /dev/null && git co $CB && :
     cob = checkout -b
-    cod = !git checkout $(git config private.default-branch)
-    reb = ![ -n \"$(git config --local private.default-branch)\" ] && [ -z "$(git d)" ] && CURRENT_BRANCH=$(git b | grep '*' | cut -d' ' -f2) && git cc && git co $CURRENT_BRANCH && [ -z "$(git b -a | grep 'remotes/' | grep $CURRENT_BRANCH)" ] && git rebase $(git config private.default-branch)
+    cod = !git co $(git config private.default-branch)
+    reb = ![ -n \"$(git config --local private.default-branch)\" ] && [ -z "$(git d)" ] && CB=$(git current-branch) && git cc && git co $CB && [ -z "$(git b -a | grep 'remotes/' | grep $CB)" ] && git rebase $(git config private.default-branch)
+    current-branch = !echo $(git branch | grep '^*' | cut -d' ' -f2) && :
+    other-branches = !git branch | grep -v '^*' | sort | uniq && :
 
 [private]
     default-branch = master
