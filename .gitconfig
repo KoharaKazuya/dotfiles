@@ -23,6 +23,7 @@
     l  = log --oneline
     m  = merge --no-ff
     s  = status --short
+    bb = !git backup-branch
     ca = commit --amend
     co = checkout --quiet
     cp = cherry-pick
@@ -38,6 +39,7 @@
     cob = checkout -b
     cod = !git co $(git config private.default-branch)
     reb = ![ -n \"$(git config --local private.default-branch)\" ] && [ -z "$(git d)" ] && CB=$(git current-branch) && git cc && git co $CB && [ -z "$(git b -a | grep 'remotes/' | grep $CB)" ] && git rebase $(git config private.default-branch)
+    backup-branch = !CB=$(git current-branch) && git branch --move ${CB}_ && :
     current-branch = !echo $(git branch | grep '^*' | cut -d' ' -f2) && :
     other-branches = !git branch | grep -v '^*' | sort | uniq && :
 
