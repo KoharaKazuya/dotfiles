@@ -1,0 +1,16 @@
+#!/bin/zsh
+
+# ~/.* ファイルが ~/projects/doffiles/.* へのシンボリックリンクか
+# 一例として .vimrc を調査
+[ "$(readlink ~/.vimrc)" = "$(echo ~/projects/dotfiles/.vimrc)" ] || \
+echo '. から始まるファイルのシンボリックリンクが作成されていません' >&2
+
+# git clone が再帰的に実行されているかどうか
+# 一例として ZIM のモジュールを調査
+[ -d ~/.zsh/.zim/modules ] || \
+echo 'git clone が再帰的に実行されていません' >&2
+
+# .zshrc が読み込まれているか
+# 一例として success/warning/error コマンドの調査
+(type success && type warning && type error) > /dev/null || \
+echo '.zshrc が読み込まれていません' >&2
