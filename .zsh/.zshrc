@@ -8,6 +8,8 @@ HISTFILE="$HOME/.zsh_history"
 ### Mac だと chmod のオプション (--preserve-root) がない (BSD?) ので、エイリアスを解除
 unalias chmod
 unalias chown
+### git aliases の削除
+unalias $(alias | grep '^g.*='\''*git' | cut -d'=' -f1)
 
 
 # オプション設定
