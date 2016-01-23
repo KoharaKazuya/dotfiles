@@ -35,7 +35,7 @@
     rf = flow release finish
     mc = !(git cod && git branch --merged | grep -v \\* && git branch --all | grep remotes/origin/ | sed -e 's%remotes/origin/%%') | sort | uniq -d | xargs -I{} sh -c 'git push origin :{} && git branch -d {}'
     cc = !"if [ -z \"$(git d)\" ]; then git cod && git pull && git mc && git aff; else echo 'Not commited files' >&2; ! :; fi"
-    aff = !CB=$(git current-branch) && git other-branches | xargs -I{} env CB=$CB sh -c 'git co {} && git merge --ff-only --quiet $CB || echo fast-forward abort: $CB' 2> /dev/null && git co $CB && :
+    aff = !CB=$(git current-branch) && git other-branches | xargs -I{} env CB=$CB sh -c 'git co {} && git merge --ff-only --quiet $CB || echo fast-forward abort: $(git current-branch)' 2> /dev/null && git co $CB && :
     cob = checkout -b
     cod = !git co $(git config private.default-branch)
     reb = ![ -n \"$(git config --local private.default-branch)\" ] && [ -z "$(git d)" ] && CB=$(git current-branch) && git cc && git co $CB && [ -z "$(git b -a | grep 'remotes/' | grep $CB)" ] && git rebase $(git config private.default-branch)
