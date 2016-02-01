@@ -100,7 +100,14 @@ crontab() {
 }
 
 ## rm がゴミ箱行きではなければ、警告を出す
-warning "rm is dangerous."
+if builtin command -v rm-osx-trash > /dev/null; then
+  alias rm=rm-osx-trash
+else
+  warning "rm is dangerous."
+  if [ "$(uname)" = 'Darwin' ]; then
+    echo 'see https://github.com/KoharaKazuya/rm-osx-trash'
+  fi
+fi
 
 ## zsh から Mac の通知センターを利用する
 export SYS_NOTIFIER="$(builtin command -v terminal-notifier)"
