@@ -10,9 +10,11 @@ export GOPATH=~/go
 export GOROOT=$(command -v go > /dev/null && go env GOROOT)
 
 # パス設定
+typeset -U path
 path=(
     $path
     $HOME/bin
+    ~/projects/dotfiles/bin
     $GOPATH/bin
 )
 
