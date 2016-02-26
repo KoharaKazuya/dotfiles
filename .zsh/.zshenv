@@ -72,6 +72,9 @@ ls_abbrev() {
 mksh() {
     cat <<'SHELLSCRIPT' > "$1"
 #!/bin/sh
+
+set -eu
+
 usage() {
     cat <<HELP
 NAME:
