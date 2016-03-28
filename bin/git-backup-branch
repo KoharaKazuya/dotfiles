@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -eu
+
+surfix=_bak
+
+# 現在のブランチ名取得
+current_branch=$(git current-branch)
+
+# 現在のブランチ名に surfix がついていなければ付ける
+if [[ $current_branch != *$surfix ]]
+then
+  git b --move ${current_branch}${surfix}
+fi

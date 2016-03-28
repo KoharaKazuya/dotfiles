@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+if [ -n "$(git d)" ]
+then
+  echo 'Not commited files' >&2
+  exit 1
+fi

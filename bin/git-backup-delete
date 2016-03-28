@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+# デフォルトブランチに切り替える
+git cod
+
+# バックアップブランチ削除
+for bb in $(git other-branches | grep '_bak$')
+do
+  git _processing "Deleting $bb" git b -D --quiet $bb
+done

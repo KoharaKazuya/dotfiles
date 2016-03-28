@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+git branch | grep -v '^*' | sort | uniq

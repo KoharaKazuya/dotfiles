@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+git co "$(git config private.default-branch)"

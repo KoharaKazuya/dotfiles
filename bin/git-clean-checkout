@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -eu
+
+# 未コミットの変更ファイルがあれば終了
+git _modified-files-guard
+
+# デフォルトブランチに切り替え
+git cod
+
+# マージ済みブランチの削除
+git mc
+
+# デフォルトブランチ以外を fast-forward marge
+git aff

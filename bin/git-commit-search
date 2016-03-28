@@ -1,0 +1,81 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+    cat <<HELP
+NAME
+    git-commit-search - git コミットコメント全文検索
+
+SYNOPSIS
+    git commit-search [options] <query>
+
+DESCRIPTION
+    git の履歴の中から、指定した文字列を含むコミットコメントを持つ
+    コミット一覧を出力する
+
+OPTIONS
+    <query>
+        検索文字列
+
+    -n<number>
+        最大取得件数
+
+    -c, --show-comment
+        検索にヒットしたコミットのコミットハッシュを表示する代わりに
+        コミットコメントを表示する
+HELP
+}
+
+main() {
+    SCRIPT_DIR="$(cd $(dirname "$0"); pwd)"
+
+    # 最大検索件数
+    # (0 以下は制限なし)
+    count=0
+    # コミットコメントを表示する
+    show_comment=false
+
+    for ARG; do
+        case "$ARG" in
+            --help) usage; exit 0;;
+            --verbose) set -x; shift;;
+            --show-comment) show_comment=true; shift;;
+            --) shift; break;;
+            -*)
+                OPTIND=1
+                while getopts hn:c OPT "$ARG"; do
+                    case "$OPT" in
+                        h) usage; exit 0;;
+                        n) count="$OPTARG";;
+                        c) show_comment=true;;
+                    esac
+                done
+                shift $(expr $OPTIND - 1)
+                ;;
+        esac
+    done
+
+    if [ -z "${@+x}" ]; then usage; exit 1; fi
+
+    # 全コミットを列挙する
+…
+    for commit_hash in $(git rev-list --all)
+    do
+      if git show $commit_hash | grep "$ARG" > /dev/null
+      then
+        # コミットコメントを表示、またはコミットハッシュを表示
+        if $show_comment
+        then
+          git show $commit_hash
+        else
+          echo $commit_hash
+        fi
+        # 最大取得件数に達したら終了
+        count=$(($count - 1))
+        if [ "$count" = 0 ]; then break; fi
+      fi
+    done
+}
+
+main "$@"

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+# 引数は 2 つ以上必須
+[ "$#" -ge 2 ]
+
+printf "$1... "
+shift
+sh -c "$*" 2>&1 /dev/null && printf '\e[1;32m✓\e[0m\n' || printf '\e[1;31m✓\e[0m\n'

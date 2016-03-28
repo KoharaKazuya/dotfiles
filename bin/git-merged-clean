@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -eu
+
+# 未コミットの変更ファイルがあれば終了
+git _modified-files-guard
+
+# リモートに同名のブランチがあるマージ済みブランチ一覧
+target_branches=$( \
+  ( git branch --merged | grep -v -E '^\*' && \
+    git branch --all | grep remotes/origin/ | sed -e 's%remotes/origin/%%') | \
+  # 両方にある行のみ出力
+  sort | uniq -d \
+)
+
+# 各マージ済みブランチを削除
+for tb in $target_branches
+do
+  git _processing "Removing $tb" git push origin :$tb && git branch -d $tb
+done

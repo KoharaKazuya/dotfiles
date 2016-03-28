@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -eu
+
+# 未コミットの変更ファイルがあれば終了
+git _modified-files-guard
+
+# デフォルトブランチが設定されているかどうかチェック
+[ -n "$(git config --local private.default-branch)" ] || echo 'デフォルトブランチが未設定です' >&2 && false
+
+# 現在のブランチを記憶
+current_branch=$(git current-branch)
+
+# デフォルトブランチを最新に
+git cc
+git co $current_branch
+
+# リモートに現在のブランチと同名のブランチが存在しないことをチェック
+[ -z "$(git b -a | grep 'remotes/' | grep $current_branch)" ]
+
+# rebase
+git _processing "Rebasing $current_branch" git rebase $(git config private.default-branch)
