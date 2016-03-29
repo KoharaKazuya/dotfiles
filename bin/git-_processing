@@ -7,4 +7,4 @@ set -eu
 
 printf "$1... "
 shift
-sh -c "$*" 2>&1 /dev/null && printf '\e[1;32m✓\e[0m\n' || printf '\e[1;31m✓\e[0m\n'
+sh -c "$*" 1> /dev/null 2>&1 && printf '\e[1;32m✓\e[0m\n' || printf '\e[1;31m✓\e[0m\n'

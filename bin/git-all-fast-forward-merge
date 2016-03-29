@@ -11,7 +11,7 @@ current_branch=$(git current-branch)
 for tb in $(git other-branches)
 do
   git co $tb
-  git _processing "Merging $tb" git merge --ff-only --quiet $current_branch
+  git _processing "Merging $tb" git merge --ff-only $current_branch
 done
 
 # コマンド開始時のブランチに戻す

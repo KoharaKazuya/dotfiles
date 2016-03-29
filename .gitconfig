@@ -23,7 +23,7 @@
     l  = log --oneline
     m  = merge --no-ff
     s  = status --short
-    bb = !git backup-branch
+    bb = backup-branch
     ca = commit --amend
     co = checkout --quiet
     cp = cherry-pick
@@ -39,6 +39,7 @@
     bbd = backup-delete
     cob = checkout -b
     cod = checkout-default-branch
+    coi = checkout-issue
     reb = clean-rebase
 
 [private]

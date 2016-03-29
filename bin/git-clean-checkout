@@ -8,6 +8,9 @@ git _modified-files-guard
 # デフォルトブランチに切り替え
 git cod
 
+# デフォルトブランチをアップデート
+git _processing "Pulling" git pull
+
 # マージ済みブランチの削除
 git mc
 

@@ -6,13 +6,18 @@ set -eu
 git _modified-files-guard
 
 # デフォルトブランチが設定されているかどうかチェック
-[ -n "$(git config --local private.default-branch)" ] || echo 'デフォルトブランチが未設定です' >&2 && false
+if [ -z "$(git config --local private.default-branch)" ]
+then
+  echo 'デフォルトブランチが未設定です' >&2
+  exit 1
+fi
 
 # 現在のブランチを記憶
 current_branch=$(git current-branch)
 
 # デフォルトブランチを最新に
-git cc
+git cod
+git mc
 git co $current_branch
 
 # リモートに現在のブランチと同名のブランチが存在しないことをチェック
