@@ -16,8 +16,7 @@ fi
 current_branch=$(git current-branch)
 
 # デフォルトブランチを最新に
-git cod
-git mc
+git cc
 git co $current_branch
 
 # リモートに現在のブランチと同名のブランチが存在しないことをチェック

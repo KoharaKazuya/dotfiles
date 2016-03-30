@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -eu
+
+# 引数の数チェック
+[ "$#" -eq 1 ]
+# 引数が数値かどうかチェック
+[ "$1" -gt 0 ]
+
+# 未コミットの変更ファイルがあれば終了
+git _modified-files-guard
+
+# ソースの最新化
+git cc
+
+# issue ブランチの作成
+git _processing "Creating branch issue/#$1" git cob "issue/#$1"
