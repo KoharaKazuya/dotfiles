@@ -14,4 +14,4 @@ git _modified-files-guard
 git cc
 
 # issue ブランチの作成
-git _processing "Creating branch issue/#$1" git cob "issue/#$1"
+git _processing 'coi' "Creating branch issue/#$1" git cob "issue/#$1"

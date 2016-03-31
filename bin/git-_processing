@@ -2,9 +2,22 @@
 
 set -eu
 
-# 引数は 2 つ以上必須
-[ "$#" -ge 2 ]
+# 引数は 3 つ以上必須
+[ "$#" -ge 3 ]
 
+# タグ表示
+# 例: [cc ]
+printf '%3s: ' "$1"
+shift
+
+# 処理中メッセージ表示
+# 例: Merging...
 printf "$1... "
 shift
-sh -c "$*" 1> /dev/null 2>&1 && printf '\e[1;32m✓\e[0m\n' || printf '\e[1;31m✓\e[0m\n'
+
+if sh -c "$*" 1> /dev/null 2>&1; then
+  printf '\e[1;32m✓\e[0m\n'
+else
+  printf '\e[1;31m✓\e[0m\n'
+  exit 1
+fi

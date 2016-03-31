@@ -16,5 +16,5 @@ target_branches=$( \
 # 各マージ済みブランチを削除
 for tb in $target_branches
 do
-  git _processing "Removing $tb" git push origin :$tb && git branch -d $tb
+  git _processing 'mc' "Removing $tb" git push origin :$tb '&&' git branch -d $tb
 done
