@@ -8,10 +8,15 @@ git _modified-files-guard
 # 現在ブランチを記憶
 current_branch=$(git current-branch)
 
+# 現在のブランチ以外の各ブランチをチェック
 for tb in $(git other-branches)
 do
-  git co $tb
-  git _processing 'aff' "Merging $tb" git merge --ff-only $current_branch || :
+  # Fast-Forward Merge 可能かつ、merge が必要なコミットがあるか
+  if [ -z "$(git rev-list --max-count 1 $current_branch..$tb)" ] && \
+     [ -n "$(git rev-list --max-count 1 $tb..$current_branch)" ]; then
+    git co $tb
+    git _processing 'aff' "Merging $tb" git merge --ff-only $current_branch || :
+  fi
 done
 
 # コマンド開始時のブランチに戻す
