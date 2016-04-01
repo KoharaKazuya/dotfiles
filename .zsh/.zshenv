@@ -78,11 +78,11 @@ set -eu
 usage() {
     cat <<HELP
 NAME:
-   $0 -- {one sentence description}
+   $(basename $0) -- {one sentence description}
 
 SYNOPSIS:
-  $0 [-h|--help]
-  $0 [--verbose]
+  $(basename $0) [-h|--help]
+  $(basename $0) [--verbose]
 
 DESCRIPTION:
    {description here}
