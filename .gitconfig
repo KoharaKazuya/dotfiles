@@ -24,6 +24,7 @@
     m  = merge --no-ff
     s  = status --short
     bb = backup-branch
+    bd = branch --delete
     ca = commit --amend
     cc = clean-checkout
     co = checkout --quiet
