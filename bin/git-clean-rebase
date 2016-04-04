@@ -23,4 +23,4 @@ git co $current_branch
 [ -z "$(git b -a | grep 'remotes/' | grep $current_branch)" ]
 
 # rebase
-git _processing 'reb' "Rebasing $current_branch" git rebase $(git config private.default-branch)
+git _processing 'reb' "Rebasing $current_branch" git rebase $(git config private.default-branch) || (git rebase --abort && false)
