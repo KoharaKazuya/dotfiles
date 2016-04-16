@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+git log --since=midnight --author="$(git config user.name)" --oneline
