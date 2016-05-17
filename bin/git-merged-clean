@@ -10,11 +10,27 @@ target_branches=$( \
   ( git branch --merged | grep -v -E '^\*' && \
     git branch --all | grep remotes/origin/ | sed -e 's%remotes/origin/%%') | \
   # 両方にある行のみ出力
-  sort | uniq -d \
+  sort | uniq -d | \
+  # 行頭と行末のスペースを削除
+  sed -e 's/^ *//' | sed -e 's/ *$//'
 )
 
-# 各マージ済みブランチを削除
-for tb in $target_branches
-do
-  git _processing 'mc' "Removing $tb" git push origin :$tb '&&' git branch -d $tb
-done
+# 引数がある場合は、全ての引数を削除したいブランチ名とし、
+# ない場合は全てのマージ済みブランチを削除する
+if [ $# = 0 ]
+then
+  # 各マージ済みブランチを削除
+  printf "$target_branches" | xargs git merged-clean
+else
+  for tb in "$@"
+  do
+    # マージ済みのブランチのみ対象とする
+    if printf "$target_branches" | grep "$tb" >/dev/null 2>&1
+    then
+      git _processing 'mc' "Removing $tb" git push origin :$tb '&&' git branch -d $tb
+    else
+      printf "Is not merged branch: $tb\n" >&2
+      exit 1
+    fi
+  done
+fi
