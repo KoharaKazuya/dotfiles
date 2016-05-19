@@ -7,12 +7,15 @@ git _modified-files-guard
 
 # リモートに同名のブランチがあるマージ済みブランチ一覧
 target_branches=$( \
-  ( git branch --merged | grep -v -E '^\*' && \
-    git branch --all | grep remotes/origin/ | sed -e 's%remotes/origin/%%') | \
-  # 両方にある行のみ出力
-  sort | uniq -d | \
+  # 現在ブランチを除く、マージ済みブランチ一覧
+  git branch --merged | grep -v -E '^\*' | \
+    # git branch --all | grep remotes/origin/ | sed -e 's%remotes/origin/%%') | \
   # 行頭と行末のスペースを削除
-  sed -e 's/^ *//' | sed -e 's/ *$//'
+  sed -e 's/^ *//' | sed -e 's/ *$//' | \
+  # リモートにも存在するブランチに絞り込む
+  sieve 'git rev-parse remotes/origin/{} >/dev/null 2>&1' | \
+  # ローカルとリモートブランチが同じ HEAD であるものに絞り込む
+  sieve '[ "$(git rev-parse {})" = "$(git rev-parse remotes/origin/{})" ]' \
 )
 
 # 引数がある場合は、全ての引数を削除したいブランチ名とし、
