@@ -96,30 +96,26 @@ EXAMPLE:
 HELP
 }
 
-main() {
-    SCRIPT_DIR="$(cd $(dirname "$0"); pwd)"
 
-    for ARG; do
-        case "$ARG" in
-            --help) usage; exit 0;;
-            --verbose) set -x;;
-            --) break;;
-            -*)
-                OPTIND=1
-                while getopts h OPT "$ARG"; do
-                    case "$OPT" in
-                        h) usage; exit 0;;
-                    esac
-                done
-                ;;
-        esac
-    done
+SCRIPT_DIR="$(cd $(dirname "$0"); pwd)"
 
-    # do something
-}
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -t | --test    )
+            [ $# -lt 2 ] && (printf "Option requires an argument: $1\n" >&2; exit 1)
+            shift
+            ;;
+        -h | --help    ) usage; exit 0;;
+             --verbose ) set -x;;
+        --             ) shift; break;;
+        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
+        *              ) break;;
+    esac
+    shift
+done
 
-main "$@"
-
+# do something
+printf "$*\n"
 SHELLSCRIPT
     chmod +x "$1"
 }

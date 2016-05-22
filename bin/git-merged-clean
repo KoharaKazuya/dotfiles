@@ -9,7 +9,6 @@ git _modified-files-guard
 target_branches=$( \
   # 現在ブランチを除く、マージ済みブランチ一覧
   git branch --merged | grep -v -E '^\*' | \
-    # git branch --all | grep remotes/origin/ | sed -e 's%remotes/origin/%%') | \
   # 行頭と行末のスペースを削除
   sed -e 's/^ *//' | sed -e 's/ *$//' | \
   # リモートにも存在するブランチに絞り込む
