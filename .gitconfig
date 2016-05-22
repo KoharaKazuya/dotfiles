@@ -32,7 +32,7 @@
     dc = diff --cached
     ff = flow feature finish
     fs = flow feature start
-    mc = merged-clean
+    mc = merged-clean --all
     ms = merge --squash
     pl = pull --ff-only
     ps = push

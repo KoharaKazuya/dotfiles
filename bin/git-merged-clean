@@ -21,6 +21,10 @@ target_branches=$( \
 # ない場合は全てのマージ済みブランチを削除する
 if [ $# = 0 ]
 then
+  printf "削除したいマージ済みブランチを指定するか、全てのマージ済みブランチを削除するために --all オプションを指定して下さい。\n" >&2
+  exit 1
+elif [ "$1" = "-a" ] || [ "$1" = "--all" ]
+then
   # 各マージ済みブランチを削除
   printf "$target_branches" | xargs git merged-clean
 else
