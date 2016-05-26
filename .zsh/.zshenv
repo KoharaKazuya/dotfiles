@@ -96,15 +96,25 @@ EXAMPLE:
 HELP
 }
 
+opt_arg=""
+parse_opt_arg() {
+    # 引数が必要なオプションに引数がなければエラー終了させる
+    if [ $# -lt 2 ] || !(case "$2" in -*) false;; esac); then
+        printf "Option requires an argument: $1\n" >&2
+        exit 1
+    fi
 
-SCRIPT_DIR="$(cd $(dirname "$0"); pwd)"
+    opt_arg="$2"
+}
+
+
+script_dir="$(cd $(dirname "$0"); pwd)"
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        -t | --test    )
-            [ $# -lt 2 ] && (printf "Option requires an argument: $1\n" >&2; exit 1)
-            shift
-            ;;
+        -t | --test    ) parse_opt_arg "$@"
+                         printf "test: $opt_arg\n"
+                         shift;;
         -h | --help    ) usage; exit 0;;
              --verbose ) set -x;;
         --             ) shift; break;;
