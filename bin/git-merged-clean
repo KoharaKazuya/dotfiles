@@ -2,6 +2,30 @@
 
 set -eu
 
+usage() {
+    cat <<HELP
+usage: git ${0##*/git-} [<options>] <branch>...
+
+    -a, --all             remove all merged branches
+    --dry-run             show what branches would be removed
+
+HELP
+}
+
+all=false
+dry_run=false
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h | --help    ) usage; exit 0;;
+        -a | --all     ) all=true;;
+             --dry-run ) dry_run=true;;
+        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
+        *              ) break;;
+    esac
+    shift
+done
+
+
 # 未コミットの変更ファイルがあれば終了
 git _modified-files-guard
 
@@ -17,26 +41,32 @@ target_branches=$( \
   sieve '[ "$(git rev-parse {})" = "$(git rev-parse remotes/origin/{})" ]' \
 )
 
-# 引数がある場合は、全ての引数を削除したいブランチ名とし、
-# ない場合は全てのマージ済みブランチを削除する
-if [ $# = 0 ]
-then
-  printf "削除したいマージ済みブランチを指定するか、全てのマージ済みブランチを削除するために --all オプションを指定して下さい。\n" >&2
-  exit 1
-elif [ "$1" = "-a" ] || [ "$1" = "--all" ]
-then
-  # 各マージ済みブランチを削除
-  printf "$target_branches" | xargs git merged-clean
-else
-  for tb in "$@"
-  do
-    # マージ済みのブランチのみ対象とする
-    if printf "$target_branches" | grep "$tb" >/dev/null 2>&1
-    then
-      git _processing 'mc' "Removing $tb" git push origin :$tb '&&' git branch -d $tb
-    else
+# 引数がある場合は、全ての引数をターゲットとする
+if [ $# -gt 0 ]; then
+  # 全ての引数がマージ済みブランチかどうかチェック
+  for tb in "$@"; do
+    if !(printf "$target_branches\n" | grep "$tb" >/dev/null 2>&1); then
       printf "Is not merged branch: $tb\n" >&2
       exit 1
     fi
   done
+  branch_to_remove="$(for tb in "$@"; do printf "$tb\n"; done)"
+# --all オプションがある場合は、全てのマージ済みブランチをターゲットとする
+elif $all; then
+  branch_to_remove="$target_branches"
+# それ以外はエラー
+else
+  printf "Specify branch to remove\n" >&2
+  exit 1
 fi
+
+# --dry-run オプションがある場合は、ターゲットを出力して終了
+if $dry_run; then
+  printf "$branch_to_remove\n"
+  exit 0
+fi
+
+# 全てのターゲットをローカルとリモートから削除
+for tb in $(printf "$target_branches" | tr '\n' ' '); do
+  git _processing 'mc' "Removing $tb" "git push origin :$tb && git branch -d $tb"
+done
