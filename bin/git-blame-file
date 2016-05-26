@@ -1,0 +1,46 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+    cat <<HELP
+NAME:
+   $(basename $0) -- {one sentence description}
+
+SYNOPSIS:
+  $(basename $0) [-h|--help]
+  $(basename $0) [--verbose]
+
+DESCRIPTION:
+   {description here}
+
+  -h  --help      Print this help.
+      --verbose   Enables verbose mode.
+
+EXAMPLE:
+  {examples if any}
+
+HELP
+}
+
+
+SCRIPT_DIR="$(cd $(dirname "$0"); pwd)"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -t | --test    )
+            [ $# -lt 2 ] && (printf "Option requires an argument: $1\n" >&2; exit 1)
+            shift
+            ;;
+        -h | --help    ) usage; exit 0;;
+             --verbose ) set -x;;
+        --             ) shift; break;;
+        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
+        *              ) break;;
+    esac
+    shift
+done
+
+for rev in $(git blame -w -- "$1" | cut -f1 -d' '); do
+    git log -1 --format=%an $rev
+done | sort | uniq -c | sort -nr
