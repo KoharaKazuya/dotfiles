@@ -13,12 +13,12 @@
 [gui]
     encoding = UTF-8
 [color]
-    ui = true
+    ui = auto
 [alias]
     a  = add --all
     b  = branch
     c  = commit --message
-    d  = diff
+    d  = diff --color-words
     f  = fetch --prune
     l  = log --oneline
     m  = merge --no-ff
@@ -29,7 +29,7 @@
     cc = clean-checkout
     co = checkout --quiet
     cp = cherry-pick
-    dc = diff --cached
+    dc = diff --color-words --cached
     ff = flow feature finish
     fs = flow feature start
     mc = merged-clean --all
