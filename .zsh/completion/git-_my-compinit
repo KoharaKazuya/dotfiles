@@ -1,0 +1,25 @@
+#!/bin/zsh
+
+# 補完したい自作コマンドの一覧
+local -a my_commands
+my_commands=(
+  git-_help-message
+  git-_help-options
+  git-merged-clean
+)
+# 各自作コマンドに対して補完を作成
+local my_command
+local option
+local -a arguments
+for my_command in $my_commands; do
+  arguments=""
+  for option in $(git _help-options "$my_command"); do
+    arguments+=("'${option}[$(git _help-message "$my_command" "$option")]'")
+  done
+  eval "
+    _$my_command() {
+      _arguments "$arguments"
+    }
+  "
+  compdef _$my_command $my_command
+done

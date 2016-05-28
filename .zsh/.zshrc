@@ -21,6 +21,12 @@ autoload -Uz add-zsh-hook
 ## パスのディレクトリ単位で ^w が行えるように
 WORDCHARS=${WORDCHARS:s/\//}
 
+# 補完設定
+fpath=($ZDOTDIR/completion $fpath)
+compinit -d $HOME/.zcompdump
+# 自作コマンドの補完設定を読み込む
+autoload -Uz git-_my-compinit && git-_my-compinit
+
 # peco hitory
 if builtin command -v peco > /dev/null ; then
     function peco-select-history() {

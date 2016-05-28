@@ -16,10 +16,9 @@ all=false
 dry_run=false
 while [ $# -gt 0 ]; do
     case "$1" in
-        -h | --help    ) usage; exit 0;;
         -a | --all     ) all=true;;
              --dry-run ) dry_run=true;;
-        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
+        -*             ) usage; exit 1;;
         *              ) break;;
     esac
     shift

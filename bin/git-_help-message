@@ -1,0 +1,47 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+    cat <<HELP
+usage: git ${0##*/git-} [<options>] <command> <options>
+
+HELP
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -*             ) usage; exit 1;;
+        *              ) break;;
+    esac
+    shift
+done
+
+# 引数の数が合わない場合は終了
+if [ $# -ne 2 ]; then
+  usage
+  exit 1
+fi
+
+
+# 第一引数がコマンド
+command="${1##git-}"
+# コマンドの存在確認
+git help "$command" >/dev/null 2>&1 || builtin command -v "git-$command" >/dev/null
+
+# 第二引数がオプション
+option="$2"
+
+# コマンドのヘルプテキストを取得する
+help_text="$(git $command -h 2>&1 | grep -E " $option[, ]" || :)"
+
+# 指定オプションが見つからなければ終了
+if [ -z "$help_text" ]; then
+  printf "Not found option: $option\n" >&2
+  exit 1
+fi
+
+# メッセージ部分だけ抽出
+message="$(printf "$help_text\n" | sed -E 's/^ *(-{1,2}[^ ]+,? +)+(.*)$/\2/')"
+
+printf "$message\n"
