@@ -7,17 +7,17 @@ set -eu
 
 # タグ表示
 # 例: [cc ]
-printf '%3s: ' "$1"
+printf -- '%3s: ' "$1"
 shift
 
 # 処理中メッセージ表示
 # 例: Merging...
-printf "$1... "
+printf -- "$1...\n"
 shift
 
-if sh -c "$*" 1> /dev/null 2>&1; then
-  printf '\e[1;32m✓\e[0m\n'
+if env GIT_PAGER_IN_USE=true sh -c "$*" 2>&1 | sed -E 's/^/   | /'; then
+  printf '   | \e[1;32m✓\e[0m\n\n'
 else
-  printf '\e[1;31m✓\e[0m\n'
+  printf '   | \e[1;31m✓\e[0m\n\n'
   exit 1
 fi
