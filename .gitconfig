@@ -44,6 +44,21 @@
     cod = checkout-default-branch
     coi = checkout-issue
     reb = clean-rebase
+    # 人間らしいエイリアス (http://postd.cc/human-git-aliases/)
+    unstage = reset --quiet HEAD --
+    discard = checkout --
+    nevermind = !git reset --hard HEAD && git clean -df
+    uncommit = reset --mixed HEAD~
+    save = commit --message
+    resave = commit --amend
+    tags = tag
+    branches = branch --all
+    stashes = stash list
+    remotes = remote -v
+    move = mv
+    remove = rm
+    contributors = shortlog -s -n
+    filetrail = log --follow --oneline
 
 [private]
     default-branch = master
