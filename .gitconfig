@@ -34,7 +34,7 @@
     fs = flow feature start
     mc = merged-clean --all
     ms = merge --squash
-    pl = pull --ff-only
+    pl = pull --ff-only --prune
     ps = push
     rf = flow release finish
     rs = flow release start
