@@ -18,7 +18,7 @@ shift
 printf -- "$1...\n"
 shift
 
-env GIT_PAGER_IN_USE=true sh -c "$*" 2>&1 | sed -E 's/^/   | /'
+sh -c "$*" 2>&1 | sed -E 's/^/   | /'
 if [ $pipestatus[2] = 0 ]; then
   printf '   | \e[1;32m✓\e[0m\n\n'
 else
