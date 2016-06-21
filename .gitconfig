@@ -3,7 +3,7 @@
     name = KoharaKazuya
 [core]
     excludesfile = ~/.gitignore
-    autocrlf = input
+	autocrlf = false
     quotepath = false
     precomposeunicode = true
 [push]
