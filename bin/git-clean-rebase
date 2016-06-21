@@ -20,7 +20,10 @@ git cc
 git co $current_branch
 
 # リモートに現在のブランチと同名のブランチが存在しないことをチェック
-[ -z "$(git b -a | grep 'remotes/' | grep $current_branch)" ]
+if [ -n "$(git b -a | grep 'remotes/' | grep $current_branch)" ]; then
+  printf 'リモートに同名のブランチが存在します\n' >&2
+  exit 1
+fi
 
 # rebase
 git _processing 'reb' "Rebasing $current_branch" "git rebase \"$(git config private.default-branch)\"" || (git rebase --abort && false)
