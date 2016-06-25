@@ -96,6 +96,12 @@ EXAMPLE:
 HELP
 }
 
+# 割り込みや正常終了時に実行する処理
+graceful_exit() {
+  :
+}
+trap graceful_exit 0
+
 opt_arg=""
 parse_opt_arg() {
     # 引数が必要なオプションに引数がなければエラー終了させる
