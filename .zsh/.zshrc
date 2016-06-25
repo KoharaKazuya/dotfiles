@@ -23,9 +23,9 @@ WORDCHARS=${WORDCHARS:s/\//}
 
 # 補完設定
 fpath=($ZDOTDIR/completion $fpath)
-compinit -d $HOME/.zcompdump
 # 自作コマンドの補完設定を読み込む
-autoload -Uz git-_my-compinit && git-_my-compinit
+# autoload -Uz git-_my-compinit && git-_my-compinit
+# ↑ 重い……
 
 # peco hitory
 if builtin command -v peco > /dev/null ; then
@@ -120,4 +120,11 @@ export SYS_NOTIFIER="$(builtin command -v terminal-notifier)"
 if [ $SYS_NOTIFIER ]; then
   export NOTIFY_COMMAND_COMPLETE_TIMEOUT=10
   source $ZDOTDIR/zsh-notify/notify.plugin.zsh
+fi
+
+
+# zsh プロファイラが読み込まれていたら、ロード完了時に
+# プロファイリング結果を less で表示する
+if type zprof >/dev/null 2>&1; then
+  zprof | less
 fi
