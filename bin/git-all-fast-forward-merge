@@ -17,7 +17,7 @@ do
      [ -n "$(git rev-list --max-count 1 $tb..$current_branch)" ] && \
      !(git branch --all | grep "remotes/origin/$tb" >/dev/null); then
     git co $tb
-    git _processing 'aff' "Merging $tb" git merge --ff-only $current_branch || :
+    git _processing 'aff' "Merging $tb" git -c color.diff=always merge --ff-only $current_branch || :
   fi
 done
 
