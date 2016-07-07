@@ -3,7 +3,7 @@
     name = KoharaKazuya
 [core]
     excludesfile = ~/.gitignore
-	autocrlf = false
+    autocrlf = false
     quotepath = false
     precomposeunicode = true
 [push]
@@ -14,6 +14,8 @@
     encoding = UTF-8
 [color]
     ui = auto
+[mailmap]
+    file = ~/.git.mailmap
 [alias]
     a  = add --all
     b  = branch
