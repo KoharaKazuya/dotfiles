@@ -30,7 +30,7 @@
     ca = commit --amend
     cc = clean-checkout
     co = checkout --quiet
-    cp = cherry-pick
+    cp = cherry-pick -x
     dc = diff --color-words --cached
     ff = flow feature finish
     fs = flow feature start
