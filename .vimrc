@@ -1,3 +1,5 @@
+set encoding=utf-8  " 文字コードに UTF-8 を使用
+
 " 表示設定
 colorscheme desert
 syntax on         " コードの色分け
