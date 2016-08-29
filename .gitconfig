@@ -23,7 +23,7 @@
     d  = diff --color-words
     f  = fetch --prune
     l  = log --oneline
-    m  = merge --no-ff
+    m  = merge --no-ff --no-edit
     s  = status --short
     bb = backup-branch
     bd = branch --delete
