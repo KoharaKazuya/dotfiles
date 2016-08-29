@@ -70,11 +70,24 @@ ls_abbrev() {
 ## 実行ファイル（シェルスクリプト）作成コマンド
 ## (http://qiita.com/blackenedgold/items/c9e60e089974392878c8)
 mksh() {
+    min=false
+
+    if [ "$1" = "-m" ]; then
+        min=true
+        shift
+    fi
+
+    [ $# = 1 ]
+
     cat <<'SHELLSCRIPT' > "$1"
 #!/bin/sh
 
 set -eu
 
+SHELLSCRIPT
+
+    if ! $min; then
+        cat <<'SHELLSCRIPT' >> "$1"
 usage() {
     cat <<HELP
 NAME:
@@ -133,5 +146,7 @@ done
 # do something
 printf "$*\n"
 SHELLSCRIPT
+    fi
+
     chmod +x "$1"
 }
