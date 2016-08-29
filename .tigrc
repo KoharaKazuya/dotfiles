@@ -6,7 +6,7 @@ bind generic <Ctrl-b> scroll-page-up
 bind diff <Up> scroll-page-up
 bind diff <Down> scroll-page-down
 
-# 自動改行
-set wrap-lines = yes
-bind generic <Left> view-close
-bind generic <Right> enter
+# 左右スクロール量を 1/5 に
+set horizontal-scroll = 20%
+
+set mouse = yes
