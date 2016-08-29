@@ -27,6 +27,16 @@ fpath=($ZDOTDIR/completion $fpath)
 # autoload -Uz git-_my-compinit && git-_my-compinit
 # ↑ 重い……
 
+
+# less コマンドのデフォルト引数
+#
+# -F -- 最初の画面でファイル全体が表示できる場合、 less を自動的に終了させる
+# -N -- 行番号を表示する
+# -R -- 端末制御文字を解釈する (色をつけるなど)
+# -S -- 画面幅に合わせて自動改行しない
+# -X -- コマンド終了時に画面クリアを防ぐ
+# export LESS="-F -R -S -X"
+
 # peco hitory
 if builtin command -v peco > /dev/null ; then
     function peco-select-history() {
