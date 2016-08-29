@@ -13,21 +13,4 @@ max_ipaddr_col="$(cat "$ssh_config" | grep 'HostName' | awk '{ if(m<length($2)) 
 display_width="$(expr $max_name_col + 1 + $max_ipaddr_col)"
 if [ "$display_width" -gt "$(tput cols)" ]; then display_width="$(tput cols)"; fi
 
-# ssh 名表示状態 or IP アドレス表示状態
-mode=0
-name=""
-# 一行ずつ処理する
-while read line; do
-  if [ $mode = 0 ] && echo "$line" | grep '^Host\s\+' >/dev/null; then
-    name="$(echo "$line" | awk '{ print $2 }')"
-    mode=1
-  elif [ $mode = 1 ] && echo "$line" | grep 'HostName' >/dev/null; then
-    ipaddr="$(echo "$line" | awk '{ print $2 }')"
-    name_col="$(printf "$name" | wc -c)"
-    ipaddr_col="$(printf "$ipaddr" | wc -c)"
-    space_col="$(expr $display_width - $name_col - $ipaddr_col)"
-    printf "\e[0m%s%${space_col}s\e[4m%s\n" "$name" '' "$ipaddr"
-    name=''
-    mode=0
-  fi
-done < "$ssh_config"
+cat "$ssh_config" | grep -v -E '^[ \t]*#' | awk -v "dw=$display_width" '/^Host[ \t]/{a=$2}/HostName/{b=$2;printf("\033[0m%-" dw-length(b)-1 "s \033[4m%s\n",a,b)}'
