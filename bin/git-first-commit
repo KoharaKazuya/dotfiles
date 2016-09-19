@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eu
+
+# 最初のコミットになれるかチェック
+if git show 2>&1 >/dev/null; then
+  printf '\e[33m%s\e[0m\n' 'Already commited'
+  exit 1
+fi
+
+git commit --allow-empty --message 'First Empty Commit'

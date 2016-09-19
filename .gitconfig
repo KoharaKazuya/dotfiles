@@ -32,6 +32,7 @@
     co = checkout --quiet
     cp = cherry-pick -x
     dc = diff --color-words --cached
+    fc = first-commit
     ff = flow feature finish
     fs = flow feature start
     mc = merged-clean --all
