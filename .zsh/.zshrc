@@ -125,6 +125,11 @@ else
   fi
 fi
 
+## colordiff がインストールされていれば diff を置き換え
+if builtin command -v colordiff > /dev/null; then
+  alias diff=colordiff
+fi
+
 ## zsh から Mac の通知センターを利用する
 export SYS_NOTIFIER="$(builtin command -v terminal-notifier)"
 if [ $SYS_NOTIFIER ]; then
