@@ -67,6 +67,11 @@ ls_abbrev() {
     fi
 }
 
+## cd ショートカット
+cdl() {
+  cd -P ~/links/"$1"
+}
+
 ## 実行ファイル（シェルスクリプト）作成コマンド
 ## (http://qiita.com/blackenedgold/items/c9e60e089974392878c8)
 mksh() {
