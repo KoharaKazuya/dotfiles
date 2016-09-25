@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+composite -compose difference "$2" "$1" png:- | composite -dissolve 50% "$2" - png:- | montage -geometry +4+4 "$2" - "$1" png:- | imgcat
