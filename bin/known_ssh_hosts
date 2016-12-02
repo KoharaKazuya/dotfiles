@@ -13,4 +13,12 @@ max_ipaddr_col="$(cat "$ssh_config" | grep 'HostName' | awk '{ if(m<length($2)) 
 display_width="$(expr $max_name_col + 1 + $max_ipaddr_col)"
 if [ "$display_width" -gt "$(tput cols)" ]; then display_width="$(tput cols)"; fi
 
-cat "$ssh_config" | grep -v -E '^[ \t]*#' | awk -v "dw=$display_width" '/^Host[ \t]/{a=$2}/HostName/{b=$2;printf("\033[0m%-" dw-length(b)-1 "s \033[4m%s\n",a,b)}'
+# 出力先が端末の場合のみ文字を装飾
+em=""
+reset=""
+if [ -t 1 ]; then
+  em="\033[4m"
+  reset="\033[0m"
+fi
+
+cat "$ssh_config" | grep -v -E '^[ \t]*#' | awk -v "dw=$display_width" '/^Host[ \t]/{a=$2}/HostName/{b=$2;printf("'"$reset"'%-" dw-length(b)-1 "s '"$em"'%s\n",a,b)}'
