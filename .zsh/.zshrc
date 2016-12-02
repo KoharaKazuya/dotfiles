@@ -130,6 +130,11 @@ if builtin command -v colordiff > /dev/null; then
   alias diff=colordiff
 fi
 
+## yarn がインストールされていれば、npm をラップ
+if builtin command -v yarn > /dev/null; then
+  alias npm=yarn-npm-wrapper
+fi
+
 ## zsh から Mac の通知センターを利用する
 export SYS_NOTIFIER="$(builtin command -v terminal-notifier)"
 if [ $SYS_NOTIFIER ]; then
