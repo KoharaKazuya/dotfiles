@@ -96,14 +96,14 @@ SHELLSCRIPT
 usage() {
     cat <<HELP
 NAME:
-   $(basename $0) -- {one sentence description}
+  $(basename $0) -- {one sentence description}
 
 SYNOPSIS:
   $(basename $0) [-h|--help]
   $(basename $0) [--verbose]
 
 DESCRIPTION:
-   {description here}
+  {description here}
 
   -h  --help      Print this help.
       --verbose   Enables verbose mode.
