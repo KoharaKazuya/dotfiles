@@ -20,6 +20,10 @@ setopt combining_chars
 autoload -Uz add-zsh-hook
 ## パスのディレクトリ単位で ^w が行えるように
 WORDCHARS=${WORDCHARS:s/\//}
+## Esc, e でコマンドラインをテキストエディタで編集できるように
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^[e' edit-command-line
 
 # 補完設定
 fpath=($ZDOTDIR/completion $fpath)
