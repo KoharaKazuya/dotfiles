@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+checker = /\p{M}/
+
+i = 1
+detected = false
+while line = STDIN.gets
+  if matches = checker.match(line)
+    detected = true
+
+    codepoints = matches.to_a.map { |m| "U+#{ m.unpack("U")[0].to_s(16).upcase }" }
+    STDERR.puts "Found L:#{ i } #{ codepoints.join(",") }\t#{ line }"
+  end
+  i += 1
+end
+
+exit 1 if detected
