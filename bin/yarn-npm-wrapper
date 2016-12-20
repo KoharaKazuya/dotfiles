@@ -37,7 +37,7 @@ if [ ${#packages[@]} -gt 0 ]; then
   if [ "$subcommand" = 'install' ]; then
     exec npm "${raw_args[@]}"
   fi
-  yarn $subcommand $yarn_options $deps ${packages[@]}
+  exec yarn $subcommand $yarn_options $deps ${packages[@]}
 else
-  yarn $subcommand $yarn_options $deps
+  exec yarn $subcommand $yarn_options $deps
 fi
