@@ -6,7 +6,11 @@ bind generic <Ctrl-b> scroll-page-up
 bind diff <Up> scroll-page-up
 bind diff <Down> scroll-page-down
 
+# .git.mailmap を有効化
+set mailmap = yes
+
 # 左右スクロール量を 1/5 に
 set horizontal-scroll = 20%
 
+# マウスを有効化
 set mouse = yes
