@@ -1,0 +1,65 @@
+#!/bin/sh
+
+set -eu
+
+# このコマンドの意義
+# (最終的なコミットメッセージとして用いる)
+description='この Git リポジトリ中の全ての png 画像ファイルに対し、ファイルサイズの **ロスレス** 圧縮最適化を行う。
+
+全ての変換は画像の劣化、見た目の変化、非対応環境の発生などはしない。
+(GitHub PullRequest の画像プレビュー機能などで変化がないことを確認できる)
+
+> (Web アプリの場合)
+>
+> 画像ファイルは Web ページの中でもファイルサイズが大きくなりやすく、ロード時間への影響が大きい。
+> UX 向上のため注意したい。
+
+最適化には [ImageOptim](https://imageoptim.com/) を用いる。'
+
+# 未コミットの変更ファイルがあれば終了
+git _modified-files-guard
+
+# ImageOptim.app を検索
+app_path=""
+if [ -d "/Applications/ImageOptim.app" ]; then
+  app_path="/Applications/ImageOptim.app"
+elif [ -d "$HOME/Applications/ImageOptim.app" ]; then
+  app_path="$HOME/Applications/ImageOptim.app"
+else
+  printf '\e[33;1m%s\e[0m\n' 'Not Found ImageOptim.app' >&2
+  printf '%s\n' 'This script works only on macOS.' >&2
+  printf '%s\n' 'If your machine is macOS, install ImageOptim and then try again.' >&2
+  printf '\e[4m%s\e[0m\n' 'https://imageoptim.com/' >&2
+  exit 1
+fi
+
+# CLI 用コマンドパス
+command_path="$app_path/Contents/MacOS/ImageOptim"
+if [ ! -x "$command_path" ]; then
+  printf '\e[33;1m%s\e[0m\n' 'This script is not compatible with ImageOptim version.' >&2
+  printf '%s\n' "$command_path is not excecutable file." >&2
+  exit 1
+fi
+
+# Git リポジトリ中の全画像ファイルで ImageOptim を実行
+printf '%s' 'Running ImageOptim...' >&2
+cd "$(git rev-parse --show-toplevel)"
+git ls-files | grep -E '\.png$' | tr '\n' '\0' | xargs -0 "$command_path"
+printf ' %s\n' 'Done!' >&2
+
+# ImageOptim で差分が出なければ終了
+if git _modified-files-guard >/dev/null 2>&1; then
+  printf '\e[32;1m%s\e[0m\n' 'Already Optimized!' >&2
+  exit 0
+fi
+
+# 新画像用のブランチにチェックアウト
+git checkout -b refactor/image-size-optimization/$(date "+%Y%m%dT%H%M%S%z")
+
+# 新画像をコミットする
+git add --all
+git commit \
+  --message 'Optimize size of images by ImageOptim' \
+  --message "$description"
+
+printf '\e[32;1m%s\e[0m\n' 'Optimized images!' >&2
