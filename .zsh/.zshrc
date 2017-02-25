@@ -9,7 +9,7 @@ HISTFILE="$HOME/.zsh_history"
 unalias $(alias | grep '^g.*='\''*git' | cut -d'=' -f1)
 
 
-# オプション設定
+# zsh オプション設定
 ## 色変数を使えるように
 autoload -Uz colors && colors
 ## 右プロンプトを最新行にしか表示しない
@@ -24,12 +24,17 @@ WORDCHARS=${WORDCHARS:s/\//}
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^[e' edit-command-line
-
-# 補完設定
+## 自作補完設定
 fpath=($ZDOTDIR/completion $fpath)
 # 自作コマンドの補完設定を読み込む
 # autoload -Uz git-_my-compinit && git-_my-compinit
 # ↑ 重い……
+
+
+# アプリケーション依存設定
+for f in $ZDOTDIR/.zshrc.d/*.zsh; do
+  source "$f"
+done
 
 
 # less コマンドのデフォルト引数
@@ -39,7 +44,23 @@ fpath=($ZDOTDIR/completion $fpath)
 # -R -- 端末制御文字を解釈する (色をつけるなど)
 # -S -- 画面幅に合わせて自動改行しない
 # -X -- コマンド終了時に画面クリアを防ぐ
-# export LESS="-F -R -S -X"
+# -g -- 検索ヒットハイライト時、現在アクティブのものだけハイライトする
+# -j -- 検索ヒットへの移動時、指定数だけ下に繰り下げてスクロールする
+export LESS="-F -R -S -X -g -j3"
+
+# man を見やすくする
+export MANPAGER='less'
+man() {
+  env \
+    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+    LESS_TERMCAP_md=$(printf "\e[1;31m") \
+    LESS_TERMCAP_me=$(printf "\e[0m") \
+    LESS_TERMCAP_se=$(printf "\e[0m") \
+    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+    LESS_TERMCAP_ue=$(printf "\e[0m") \
+    LESS_TERMCAP_us=$(printf "\e[1;32m") \
+    man "$@"
+}
 
 # peco hitory
 if builtin command -v peco > /dev/null ; then
@@ -80,8 +101,11 @@ function cd() {
   fi
 }
 
+
 # 環境依存の設定ファイルを読み込む
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+## PROMPT_COLOR が設定されていなければ警告
+[ -z "$PROMPT_COLOR" ] && notice 'PROMPT_COLOR is not defined.\nRun `echo "export PROMPT_COLOR=..." >> ~/.zshrc.local`'
 
 # 右プロンプトにホスト名を表示する
 RPROMPT="%{$reset_color%}<%n@%{$fg_bold[$PROMPT_COLOR]%}%m%{$reset_color%}>"
@@ -129,22 +153,15 @@ else
   fi
 fi
 
-## colordiff がインストールされていれば diff を置き換え
-if builtin command -v colordiff > /dev/null; then
-  alias diff=colordiff
-fi
-
-## yarn がインストールされていれば、npm をラップ
-if builtin command -v yarn > /dev/null; then
-  alias npm=yarn-npm-wrapper
-fi
-
 ## zsh から Mac の通知センターを利用する
 export SYS_NOTIFIER="$(builtin command -v terminal-notifier)"
 if [ $SYS_NOTIFIER ]; then
   export NOTIFY_COMMAND_COMPLETE_TIMEOUT=10
   source $ZDOTDIR/zsh-notify/notify.plugin.zsh
 fi
+
+# $fpath から補完関数を読み込む
+compinit
 
 
 # zsh プロファイラが読み込まれていたら、ロード完了時に

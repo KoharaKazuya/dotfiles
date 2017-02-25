@@ -22,8 +22,11 @@ path=(
 ## 設定ファイル再読み込み
 alias reload='exec zsh -l'
 ## 強調 echo
+notice() {
+    echo -e "${fg_bold[white]}$*${reset_color}" >&2
+}
 success() {
-    echo -e "${fg_bold[green]}$*${reset_color}"
+    echo -e "${fg_bold[green]}$*${reset_color}" >&2
 }
 warning() {
     echo -e "${fg_bold[yellow]}$*${reset_color}" >&2
