@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+git -c 'diff.image.command = imgdiff --reverse' -c 'core.pager =' diff "$@"

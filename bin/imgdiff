@@ -2,4 +2,98 @@
 
 set -eu
 
-composite -compose difference "$2" "$1" png:- | composite -dissolve 50% "$2" - png:- | montage -geometry +4+4 "$2" - "$1" png:- | imgcat
+usage() {
+    cat <<HELP
+NAME:
+  $(basename $0) -- compare 2 images and display difference
+
+SYNOPSIS:
+  $(basename $0) [-h|--help]
+  $(basename $0) [--verbose] [-r|--reverse] <old_img> <new_img>
+
+DESCRIPTION:
+  compare 2 images and display difference
+
+  -h  --help      Print this help.
+      --verbose   Enables verbose mode.
+  -r  --reverse   Reverse position of old_img and new_img.
+
+EXAMPLE:
+  $(basename $0) sample1.png sample2.png
+
+HELP
+}
+
+# 割り込みや正常終了時に実行する処理
+graceful_exit() {
+  :
+}
+trap graceful_exit 0
+
+opt_arg=""
+parse_opt_arg() {
+    # 引数が必要なオプションに引数がなければエラー終了させる
+    if [ $# -lt 2 ] || !(case "$2" in -*) false;; esac); then
+        printf "Option requires an argument: $1\n" >&2
+        exit 1
+    fi
+
+    opt_arg="$2"
+}
+
+
+script_dir="$(cd $(dirname "$0"); pwd)"
+
+reverse=false
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -r | --reverse ) reverse=true;;
+        -h | --help    ) usage; exit 0;;
+             --verbose ) set -x;;
+        --             ) shift; break;;
+        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
+        *              ) break;;
+    esac
+    shift
+done
+
+# 環境チェック
+if ! builtin command -v compare >/dev/null; then
+  printf 'Required: ImageMagick\n' >&2
+  exit 1
+fi
+if ! builtin command -v imgcat >/dev/null; then
+  printf 'Required: imgcat\n' >&2
+  exit 1
+fi
+
+# 入力のバリデーション
+## 引数の数
+if [ $# -lt 2 ]; then
+  usage
+  exit 1
+fi
+## ファイルの存在
+if ! [ -f "$1" ]; then
+  printf "Not found: %s\n" "$1" >&2
+  exit 1
+fi
+if ! [ -f "$2" ]; then
+  printf "Not found: %s\n" "$2" >&2
+  exit 1
+fi
+
+if $reverse; then
+  old_img="$2"
+  new_img="$1"
+else
+  old_img="$1"
+  new_img="$2"
+fi
+
+composite -compose difference "$old_img" "$new_img" png:- \
+  | mogrify -auto-level -write - - \
+  | composite -dissolve 10% "$old_img" - png:- \
+  | montage -geometry +0+0 -background "gray" -border 4 -bordercolor "black" "$old_img" - "$new_img" png:- \
+  | imgcat
