@@ -20,3 +20,6 @@ set hlsearch    " 検索結果をハイライト
 if has('mouse')
   set mouse=a   " マウスモード有効
 endif
+
+" ファイルタイプ追加設定
+au BufNewFile,BufRead *md :set filetype=markdown  " Markdown (最新ではデフォルトで有効)
