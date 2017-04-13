@@ -49,6 +49,7 @@
     cod = checkout-default-branch
     coi = checkout-issue
     reb = clean-rebase
+    rev = rev-parse --short --default HEAD
     # 人間らしいエイリアス (http://postd.cc/human-git-aliases/)
     unstage = reset --quiet HEAD --
     discard = checkout --
