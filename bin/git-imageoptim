@@ -2,6 +2,9 @@
 
 set -eu
 
+# このコマンドのタイトル
+# (最終的なコミットメッセージとして用いる)
+title='Optimize size of images by ImageOptim'
 # このコマンドの意義
 # (最終的なコミットメッセージとして用いる)
 description='この Git リポジトリ中の全ての png 画像ファイルに対し、ファイルサイズの **ロスレス** 圧縮最適化を行う。
@@ -42,9 +45,12 @@ if [ ! -x "$command_path" ]; then
 fi
 
 # Git リポジトリ中の全画像ファイルで ImageOptim を実行
+# 前回の最適化 (このコマンド) の実行が検出されたら差分のみに適用
 printf '%s' 'Running ImageOptim...' >&2
 cd "$(git rev-parse --show-toplevel)"
-git ls-files | grep -E '\.png$' | tr '\n' '\0' | xargs -0 "$command_path"
+prev="$(git log --oneline --grep "$title" --no-merges | grep -oE '^[^ ]*' | head -n1)"
+(if [ -z "$prev" ]; then git ls-files; else git diff --name-only "$prev"; fi) \
+  | grep -E '\.png$' | tr '\n' '\0' | xargs -0 "$command_path"
 printf ' %s\n' 'Done!' >&2
 
 # ImageOptim で差分が出なければ終了
@@ -59,7 +65,7 @@ git checkout -b refactor/image-size-optimization/$(date "+%Y%m%dT%H%M%S%z")
 # 新画像をコミットする
 git add --all
 git commit \
-  --message 'Optimize size of images by ImageOptim' \
+  --message "$title" \
   --message "$description"
 
 printf '\e[32;1m%s\e[0m\n' 'Optimized images!' >&2
