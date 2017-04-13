@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -eu
+
+git config --list \
+  | grep -E '^alias\.' \
+  | sed -E 's/^alias\.//' \
+  | column -s '=' -t
