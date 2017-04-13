@@ -46,7 +46,7 @@ done
 # -X -- コマンド終了時に画面クリアを防ぐ
 # -g -- 検索ヒットハイライト時、現在アクティブのものだけハイライトする
 # -j -- 検索ヒットへの移動時、指定数だけ下に繰り下げてスクロールする
-export LESS="-F -R -S -X -g -j3"
+export LESS="-F -R -X -g -j3"
 
 # man を見やすくする
 export MANPAGER='less'
