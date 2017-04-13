@@ -53,7 +53,7 @@
     # 人間らしいエイリアス (http://postd.cc/human-git-aliases/)
     unstage = reset --quiet HEAD --
     discard = checkout --
-    nevermind = !git reset --hard HEAD && git clean -df
+    nevermind = !git reset --hard HEAD && git clean -dff
     uncommit = reset --mixed HEAD~
     save = commit --message
     resave = commit --amend
