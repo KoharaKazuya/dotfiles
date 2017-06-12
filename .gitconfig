@@ -8,6 +8,8 @@
     precomposeunicode = true
     ignorecase = false
     attributesfile = ~/.gitattributes
+[status]
+    showUntrackedFiles = all
 [push]
     default = current
 [remote]
