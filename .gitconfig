@@ -25,7 +25,7 @@
     b  = branch
     c  = commit --message
     d  = diff --color-words
-    f  = fetch --prune
+    f  = fetch --all --prune
     l  = log --oneline
     m  = merge --no-ff --no-edit
     s  = status --short
