@@ -1,3 +1,11 @@
+# パス設定
+typeset -U path
+path=(
+    $HOME/bin
+    $HOME/projects/dotfiles/bin
+    $path
+)
+
 # 強調 echo
 notice() {
     echo -e "${fg_bold[white]}$*${reset_color}" >&2
