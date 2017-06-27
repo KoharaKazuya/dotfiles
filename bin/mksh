@@ -1,0 +1,86 @@
+#!/bin/sh
+
+# 実行ファイル（シェルスクリプト）作成コマンド
+# (http://qiita.com/blackenedgold/items/c9e60e089974392878c8)
+
+set -eu
+
+min=false
+
+if [ "$1" = "-m" ]; then
+    min=true
+    shift
+fi
+
+[ $# = 1 ]
+
+cat <<'SHELLSCRIPT' > "$1"
+#!/bin/sh
+
+set -eu
+
+SHELLSCRIPT
+
+if ! $min; then
+    cat <<'SHELLSCRIPT' >> "$1"
+usage() {
+    cat <<HELP
+NAME:
+  $(basename $0) -- {one sentence description}
+
+SYNOPSIS:
+  $(basename $0) [-h|--help]
+  $(basename $0) [--verbose]
+
+DESCRIPTION:
+  {description here}
+
+  -h  --help      Print this help.
+      --verbose   Enables verbose mode.
+
+EXAMPLE:
+  {examples if any}
+
+HELP
+}
+
+# 割り込みや正常終了時に実行する処理
+graceful_exit() {
+  :
+}
+trap graceful_exit 0
+
+opt_arg=""
+parse_opt_arg() {
+    # 引数が必要なオプションに引数がなければエラー終了させる
+    if [ $# -lt 2 ] || !(case "$2" in -*) false;; esac); then
+        printf "Option requires an argument: $1\n" >&2
+        exit 1
+    fi
+
+    opt_arg="$2"
+}
+
+
+script_dir="$(cd $(dirname "$0"); pwd)"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -t | --test    ) parse_opt_arg "$@"
+                         printf "test: $opt_arg\n"
+                         shift;;
+        -h | --help    ) usage; exit 0;;
+             --verbose ) set -x;;
+        --             ) shift; break;;
+        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
+        *              ) break;;
+    esac
+    shift
+done
+
+# do something
+printf "$*\n"
+SHELLSCRIPT
+fi
+
+chmod +x "$1"
