@@ -136,6 +136,14 @@ ls_abbrev() {
     fi
 }
 
+# cd ショートカット
+cdl() {
+  cd -P "$HOME/links/$1"
+}
+
+# zsh の再読込用関数
+alias reload='exec zsh -l'
+
 
 # 環境依存の設定ファイルを読み込む
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local

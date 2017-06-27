@@ -11,8 +11,6 @@ path=(
 )
 
 # 関数設定
-## 設定ファイル再読み込み
-alias reload='exec zsh -l'
 ## 強調 echo
 notice() {
     echo -e "${fg_bold[white]}$*${reset_color}" >&2
@@ -26,10 +24,4 @@ warning() {
 error() {
     echo -e "${fg_bold[red]}$*${reset_color}" >&2
     return 1
-}
-
-
-## cd ショートカット
-cdl() {
-  cd -P ~/links/"$1"
 }
