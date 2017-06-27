@@ -1,10 +1,6 @@
 # 言語設定
 export LANG=ja_JP.UTF-8
 
-# DevkitPro
-export DEVKITPRO=~/devkitPro
-export DEVKITPPC=$DEVKITPRO/devkitPPC
-
 # Go
 export GOPATH=~/go
 export GOROOT=$(command -v go > /dev/null && go env GOROOT)
