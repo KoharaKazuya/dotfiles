@@ -1,10 +1,6 @@
 # 言語設定
 export LANG=ja_JP.UTF-8
 
-# Go
-export GOPATH=~/go
-export GOROOT=$(command -v go > /dev/null && go env GOROOT)
-
 # パス設定
 typeset -U path
 path=(
