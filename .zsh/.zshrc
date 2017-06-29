@@ -104,7 +104,18 @@ function cd() {
 # cd したときに自動で ls を表示する
 ## ディレクトリ移動時に ls を実行する
 chpwd() {
+    cat_readme
     ls_abbrev
+}
+## カレントディレクトリに README ファイルがあれば表示する
+cat_readme() {
+  (IFS='\n'; for f in $(ls | grep -i 'readme'); do
+    if file "$f" | grep text >/dev/null 2>&1; then
+      printf '\e[38;5;008m%s\e[0m\n' "$f"
+      cat "$f" | head -n 20
+      printf '\e[38;5;008m%s\e[0m\n' "${(r:COLUMNS::-:)}"
+    fi
+  done)
 }
 ## 候補数が多すぎる時に省略される ls
 ls_abbrev() {
