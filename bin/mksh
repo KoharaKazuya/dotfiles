@@ -5,14 +5,50 @@
 
 set -eu
 
+usage() {
+    cat <<HELP
+NAME:
+  $(basename $0) -- Generate an executable shell script
+
+SYNOPSIS:
+  $(basename $0) [-h|--help]
+  $(basename $0) [--verbose]
+  $(basename $0) [-m|--min]
+
+DESCRIPTION:
+  Generate an executable shell script from template.
+  Generated script has executable permission and usable template for a command.
+
+  -h  --help      Print this help.
+      --verbose   Enables verbose mode.
+  -m  --min       Generate minimal script.
+
+EXAMPLE:
+  $(basename $0) new_command.sh
+
+HELP
+}
+
+script_dir="$(cd $(dirname "$0"); pwd)"
+
 min=false
-
-if [ "$1" = "-m" ]; then
-    min=true
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -m | --min     ) min=true
+                         shift;;
+        -h | --help    ) usage; exit 0;;
+             --verbose ) set -x;;
+        --             ) shift; break;;
+        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
+        *              ) break;;
+    esac
     shift
-fi
+done
 
-[ $# = 1 ]
+if [ $# != 1 ]; then
+  usage
+  exit 1
+fi
 
 cat <<'SHELLSCRIPT' > "$1"
 #!/bin/sh
