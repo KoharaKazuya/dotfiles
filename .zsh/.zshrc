@@ -164,6 +164,22 @@ alias reload='exec zsh -l'
 # 右プロンプトにホスト名を表示する
 RPROMPT="%{$reset_color%}<%n@%{$fg_bold[$PROMPT_COLOR]%}%m%{$reset_color%}>"
 
+# ホスト名をでっかく表示
+if ! [ -f "$HOME/.motd" ] && builtin command -v convert >/dev/null && convert -version | grep 'ImageMagick' >/dev/null; then
+  echo 'generating ~/.motd' >&2
+  convert \
+    +antialias -pointsize 32 label:"$(hostname -s)" \
+    -filter point -resize 100%x50% \
+    -compress none pbm:- \
+  | tail -n +3 \
+  | sed -E "s/(0 )+/$(printf '\e[0m')&/g; s/(1 )+/$(printf '%s' "$bg[${PROMPT_COLOR:-white}]")&/g" \
+  | sed -E 's/0 / /g; s/1 / /g' \
+  > "$HOME/.motd"
+fi
+if [ -f "$HOME/.motd" ]; then
+  cat "$HOME/.motd"
+fi
+
 # ターミナルのタイトルを変更する
 case "${TERM}" in
     kterm*|xterm*)
