@@ -1,7 +1,7 @@
 set encoding=utf-8  " 文字コードに UTF-8 を使用
 
 " 表示設定
-colorscheme desert
+colorscheme eight
 syntax on         " コードの色分け
 set number        " 行番号表示
 set ruler         " 右下に行、列番号を表示
