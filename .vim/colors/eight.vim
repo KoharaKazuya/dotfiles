@@ -14,13 +14,13 @@ hi IncSearch     cterm=NONE ctermfg=0 ctermbg=3
 hi Search        cterm=NONE ctermfg=0 ctermbg=3
 " hi MoreMsg       ctermfg=darkgreen
 " hi ModeMsg       cterm=NONE ctermfg=brown
-hi LineNr        ctermfg=0 ctermbg=0
+hi LineNr        ctermfg=7 ctermbg=0
 " hi Question      ctermfg=green
 " hi StatusLine    cterm=bold,reverse
 " hi StatusLineNC  cterm=reverse
 " hi VertSplit     cterm=reverse
 " hi Title         ctermfg=5
-hi Visual        ctermbg=7
+hi Visual        ctermbg=0
 " hi VisualNOS     cterm=bold,underline
 " hi WarningMsg    ctermfg=1
 " hi WildMenu      ctermfg=0 ctermbg=3
