@@ -177,7 +177,9 @@ if ! [ -f "$HOME/.motd" ] && builtin command -v convert >/dev/null && convert -v
   > "$HOME/.motd"
 fi
 if [ -f "$HOME/.motd" ]; then
-  cat "$HOME/.motd"
+  # ターミナルの幅が足りないときは右端をカットしつつ出力
+  cat "$HOME/.motd" \
+  | sed -E "s/^(((\[[^m]*m)?.){$COLUMNS}).*$/\1/"
 fi
 
 # ターミナルのタイトルを変更する
