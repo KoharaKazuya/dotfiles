@@ -34,8 +34,7 @@ script_dir="$(cd $(dirname "$0"); pwd)"
 min=false
 while [ $# -gt 0 ]; do
     case "$1" in
-        -m | --min     ) min=true
-                         shift;;
+        -m | --min     ) min=true;;
         -h | --help    ) usage; exit 0;;
              --verbose ) set -x;;
         --             ) shift; break;;
