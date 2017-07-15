@@ -1,7 +1,4 @@
-#!/bin/zsh
-#
-# 任意コマンドの出力をパイプで置換するため、終了ステータスが取れない
-# zsh 拡張の $pipestatus を利用するため、zsh を指定する
+#!/bin/sh
 
 set -eu
 
@@ -10,7 +7,7 @@ set -eu
 
 # タグ表示
 # 例: [cc ]
-printf -- '%3s: ' "$1"
+printf -- '\e[30m%3s: ' "$1"
 shift
 
 # 処理中メッセージ表示
@@ -18,10 +15,11 @@ shift
 printf -- "$1...\n"
 shift
 
-sh -c "$*" 2>&1 | sed -E 's/^/   | /'
-if [ $pipestatus[2] = 0 ]; then
-  printf '   | \e[1;32m✓\e[0m\n\n'
-else
-  printf '   | \e[1;31m✓\e[0m\n\n'
-  exit 1
-fi
+{ if sh -c "$*" 2>&1; then
+    printf '\e[1;32m✓\e[0m\n'
+  else
+    printf '\e[1;31m✗\e[0m\n'
+  fi
+} \
+| sed -E 's/^/[30m   | [0m/' \
+| awk '$0!~/✗/;/✗/{print;s=1};END{exit s}'
