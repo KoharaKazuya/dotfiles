@@ -31,6 +31,8 @@ target_branches=$( \
   git branch --merged | grep -v -E '^\*' | \
   # 行頭と行末のスペースを削除
   sed -e 's/^ *//' | sed -e 's/ *$//' | \
+  # master およびデフォルトブランチはターゲットとしない
+  grep -vE '^master$' | grep -vE "^$(git config private.default-branch)$" | \
   # リモートにも存在するブランチに絞り込む
   sieve 'git rev-parse remotes/origin/{} >/dev/null 2>&1' | \
   # ローカルとリモートブランチが同じ HEAD であるものに絞り込む
