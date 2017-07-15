@@ -5,8 +5,6 @@ fi
 ## Zim Customize
 ### ヒストリファイルのディレクトリを変更する
 HISTFILE="$HOME/.zsh_history"
-### git aliases の削除
-unalias $(alias | grep '^g.*='\''*git' | cut -d'=' -f1)
 
 
 # zsh オプション設定
