@@ -1,34 +1,63 @@
-#!/usr/bin/env ruby
+#!/bin/sh
 
-require 'optparse'
+set -eu
+
+usage() {
+    cat <<HELP
+NAME:
+  $(basename $0) -- {one sentence description}
+
+SYNOPSIS:
+  $(basename $0) [-h|--help]
+  $(basename $0) [--verbose]
+
+DESCRIPTION:
+  {description here}
+
+  -h  --help      Print this help.
+      --verbose   Enables verbose mode.
+  -p  --placeholder          入力行で置き換える文字列
+
+EXAMPLE:
+  {examples if any}
+
+HELP
+}
+
+# 割り込みや正常終了時に実行する処理
+graceful_exit() {
+  :
+}
+trap graceful_exit 0
+
+opt_arg=""
+parse_opt_arg() {
+    # 引数が必要なオプションに引数がなければエラー終了させる
+    if [ $# -lt 2 ] || !(case "$2" in -*) false;; esac); then
+        printf "Option requires an argument: $1\n" >&2
+        exit 1
+    fi
+
+    opt_arg="$2"
+}
 
 
-# オプションをパース
-option = { placeholder: '{}', linenum_placeholder: '{linenum}' }
-OptionParser.new do |opt|
-  opt.on('-p', '--placeholder=TEXT',         '入力行で置き換える文字列') {|v| option[:placeholder]         = v}
-  opt.on('-l', '--linenum-placeholder=TEXT', '行数で置き換える文字列')   {|v| option[:linenum_placeholder] = v}
-  opt.parse!(ARGV)
-end
+script_dir="$(cd $(dirname "$0"); pwd)"
+placeholder='{}'
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -p | --placeholder         ) parse_opt_arg "$@"
+                                     placeholder="$opt_arg"
+                                     shift;;
+        -h | --help    ) usage; exit 0;;
+             --verbose ) set -x;;
+        --             ) shift; break;;
+        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
+        *              ) break;;
+    esac
+    shift
+done
 
 
-# 引数から条件式のテンプレートを生成
-condition_template = ARGV.join(' ')
-
-# 標準入力を 1 行ずつ処理
-linenum = 0
-while line = STDIN.gets
-  # 入力行の行末改行文字を削除して扱いやすくする
-  line.chomp!
-
-  # 条件式のテンプレートの一部を入力行と行番号で置換して、条件式を生成
-  condition = condition_template
-  condition = condition.gsub(option[:placeholder], line)
-  condition = condition.gsub(option[:linenum_placeholder], linenum.to_s)
-
-  # 条件式を実行し、終了ステータスが成功なら入力行を出力
-  system(condition)
-  puts line if $? == 0
-
-  linenum += 1
-end
+cat - | xargs -I"$placeholder" sh -c "if $* >/dev/null; then echo '$placeholder'; fi"
