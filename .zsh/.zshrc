@@ -3,6 +3,8 @@ if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
   source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
 fi
 ## Zim Customize
+### (プロンプト表示などで使われる) git status の確認時、untracked なファイルも確認するように
+zstyle ':zim:git-info' verbose 'yes'
 ### ヒストリファイルのディレクトリを変更する
 HISTFILE="$HOME/.zsh_history"
 
