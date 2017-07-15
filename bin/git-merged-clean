@@ -25,9 +25,6 @@ while [ $# -gt 0 ]; do
 done
 
 
-# 未コミットの変更ファイルがあれば終了
-git _modified-files-guard
-
 # リモートに同名のブランチがあるマージ済みブランチ一覧
 target_branches=$( \
   # 現在ブランチを除く、マージ済みブランチ一覧
