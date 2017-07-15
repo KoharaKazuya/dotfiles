@@ -2,8 +2,7 @@
 
 set -eu
 
-if [ -n "$(git d)" ]
-then
+if git s | grep . >/dev/null; then
   printf 'Not commited files\n' >&2
   exit 1
 fi
