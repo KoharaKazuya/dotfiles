@@ -6,6 +6,9 @@ bind generic <Ctrl-b> scroll-page-up
 bind diff <Up> scroll-page-up
 bind diff <Down> scroll-page-down
 
+# x でコミットハッシュをクリップボード (for macOS) にコピーできるように
+bind generic x !@sh -c "echo %(commit) | head -c 7 | pbcopy"
+
 # .git.mailmap を有効化
 set mailmap = yes
 
