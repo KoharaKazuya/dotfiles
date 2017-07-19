@@ -59,7 +59,6 @@ main() {
     if [ -z "${@+x}" ]; then usage; exit 1; fi
 
     # 全コミットを列挙する
-…
     for commit_hash in $(git rev-list --all)
     do
       if git show $commit_hash | grep "$ARG" > /dev/null
