@@ -12,8 +12,7 @@ NAME:
 
 SYNOPSIS:
   $(basename $0) [-h|--help]
-  $(basename $0) [--verbose]
-  $(basename $0) [-m|--min]
+  $(basename $0) [--verbose] [--bash] [-m|--min]
 
 DESCRIPTION:
   Generate an executable shell script from template.
@@ -21,6 +20,7 @@ DESCRIPTION:
 
   -h  --help      Print this help.
       --verbose   Enables verbose mode.
+      --bash      Generate bash script (with \`pipefail\` option).
   -m  --min       Generate minimal script.
 
 EXAMPLE:
@@ -31,9 +31,11 @@ HELP
 
 script_dir="$(cd $(dirname "$0"); pwd)"
 
+bash=false
 min=false
 while [ $# -gt 0 ]; do
     case "$1" in
+             --bash    ) bash=true;;
         -m | --min     ) min=true;;
         -h | --help    ) usage; exit 0;;
              --verbose ) set -x;;
@@ -45,16 +47,25 @@ while [ $# -gt 0 ]; do
 done
 
 if [ $# != 1 ]; then
-  usage
-  exit 1
+    usage
+    exit 1
 fi
 
-cat <<'SHELLSCRIPT' > "$1"
+if $bash; then
+    cat <<'SHELLSCRIPT' > "$1"
+#!/bin/bash
+
+set -eu -o pipefail
+
+SHELLSCRIPT
+else
+    cat <<'SHELLSCRIPT' > "$1"
 #!/bin/sh
 
 set -eu
 
 SHELLSCRIPT
+fi
 
 if ! $min; then
     cat <<'SHELLSCRIPT' >> "$1"
