@@ -1,0 +1,56 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+    cat <<HELP
+NAME:
+  $(basename $0) -- output regular expression string captures any words in *-case (camel/snake/kebab)
+
+SYNOPSIS:
+  $(basename $0) [-h|--help]
+  $(basename $0) [--verbose]
+
+DESCRIPTION:
+  Convert arguments to a regular expression (POSIX Extended Regular Expressions) captures any words in *-case (camel/snake/kebab).
+  The input arguments must be separated by a space charactor.
+  The regular expression may capture some obscure words (e.g. "CamelCaseWith_snake_case", "cabab-case-withCamelCase")
+
+  -h  --help      Print this help.
+      --verbose   Enables verbose mode.
+
+EXAMPLE:
+  $(basename $0) search word     # => $("$0" search word)
+  $(basename $0) hoge fuga piyo  # => $("$0" hoge fuga hiyo)
+
+HELP
+}
+
+
+script_dir="$(cd $(dirname "$0"); pwd)"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h | --help    ) usage; exit 0;;
+             --verbose ) set -x;;
+        --             ) shift; break;;
+        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
+        *              ) break;;
+    esac
+    shift
+done
+
+
+# words="$(echo $@ | tr '[A-Z]' '[a-z]')"
+# echo $words
+first=true
+for word in $(echo $@ | tr '[A-Z]' '[a-z]'); do
+  if ! $first; then
+    printf '[_-]?'
+  fi
+  first=false
+  lower="$(echo "$word" | head -c 1 | tr -d '\n')"
+  upper="$(echo "$lower" | tr '[a-z]' '[A-Z]' | tr -d '\n')"
+  printf '[%s%s]%s' "$lower" "$upper" "${word#?}"
+done
+printf '\n'
