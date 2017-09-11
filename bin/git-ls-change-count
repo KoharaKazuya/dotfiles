@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# -gt 0 ]; then
+  cd "$1"
+fi
+
+ls -a | tail -n +3 | xargs -n1 -I{} sh -c 'printf '%6d' $(git log --oneline -- "{}" | wc -l); printf " {}\n"'
