@@ -1,0 +1,93 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+    cat <<HELP
+NAME:
+  $(basename $0) -- generate HTML template file
+
+SYNOPSIS:
+  $(basename $0) [-h|--help]
+  $(basename $0) [--verbose] [<filename>]
+
+DESCRIPTION:
+  指定したファイルに HTML のテンプレートを書き込む。
+  HTML は Google HTML/CSS Style Guide <https://google.github.io/styleguide/htmlcssguide.html> に従う。
+
+  -h  --help      Print this help.
+      --verbose   Enables verbose mode.
+
+EXAMPLE:
+  $(basename $0) index.html
+
+HELP
+}
+
+if [ $# = 0 ]; then
+  target_file="index.html"
+elif [ $# = 1 ]; then
+  target_file="$1"
+else
+  usage
+  exit 1
+fi
+
+
+out() {
+  echo "$@" >> "$target_file"
+}
+
+
+# ドキュメントタイプ
+# ------------------
+# HTML5 で宣言する
+# 宣言は大文字 (StyleGuide)
+out '<!DOCTYPE html>'
+
+# メタ要素
+# --------
+# 文字コードは UTF-8 で記述
+out '<meta charset="utf-8">'
+# viewport は初期値をデバイス幅で拡大率 1, ユーザー操作を禁止しない
+out '<meta name="viewport" content="width=device-width,initial-scale=1.0">'
+# Open Graph Protocol <http://ogp.me/> 設定 (Basic Metadata のみ)
+# title: 省略すると <title> 要素となる
+# type: 省略すると website となる
+# url: 省略すると本ページの URL となる
+# image: 省略不可
+out '<!-- <meta property="og:title" content="{{ page-title }}" /> -->'
+out '<!-- <meta property="og:type"  content="{{ website/blog/article }}" /> -->'
+out '<!-- <meta property="og:url"   content="{{ url-of-this-page }}" /> -->'
+out '<!-- <meta property="og:image" content="{{ image-url }}" /> -->'
+
+# ファビコン
+# ----------
+# HTML 5 ファビコン指定
+# 省略すると /favicon.ico にアクセスされる場合が多い
+out '<!-- <link rel="icon" href="{{ favicon.ico }}"> -->'
+
+# スタイルシート
+# --------------
+# Reset CSS for minimalist (internal CSS)
+out '<style>'
+out '  * {'
+out '    margin: 0;'
+out '    padding: 0;'
+out '    box-sizing: border-box;'
+out '  }'
+out '</style>'
+# CSS ホルダー
+out '<!-- <link rel="stylesheet" href="{{ xxx.css }}"> -->'
+
+# コンテンツ DOM
+# --------------
+# div ホルダー
+out '<!-- <div>{{ content }}</div> -->'
+
+# スクリプト
+# ----------
+# JavaScript ホルダー
+out '<!-- <script src="{{ xxx.js }}"></script> -->'
+# noscript 対応
+out '<noscript><p>このページは JavaScript を使用しています。ご使用中のブラウザは JavaScript が無効になっているか、JavaScript に対応していません。JavaScript を有効にするか、JavaScript が使用可能なブラウザでアクセスして下さい。</p></noscript>'
