@@ -22,5 +22,9 @@ if has('mouse')
   set mouse=a   " マウスモード有効
 endif
 
+" インデント設定
+set tabstop=2
+set shiftwidth=2
+
 " ファイルタイプ追加設定
 au BufNewFile,BufRead *md :set filetype=markdown  " Markdown (最新ではデフォルトで有効)
