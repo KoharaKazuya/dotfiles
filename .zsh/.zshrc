@@ -62,6 +62,15 @@ man() {
     man "$@"
 }
 
+# zsh のマニュアルを検索する
+# 参考: <http://qiita.com/mollifier/items/14bbea7503910300b3ba>
+#       他で MANPAGER を定義しているため、PAGER の設定が反映されないため MANPAGER に変更
+zman() {
+  env \
+    MANPAGER="less -g '+/^       $1'" \
+    man zshall
+}
+
 # peco hitory
 if builtin command -v peco > /dev/null ; then
     function peco-select-history() {
