@@ -16,7 +16,11 @@ set -eu
 # @see http://yosuke-furukawa.hatenablog.com/entry/2014/03/31/125131
 
 changed_files_by_commit() {
-  git diff --cached --name-only
+  case "$0" in
+    *pre-commit  ) git diff --cached --name-only;;
+    *post-commit ) git diff --name-only HEAD~;;
+    *            ) exit 1;;
+  esac
 }
 changed_files_by_merge() {
   git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD
