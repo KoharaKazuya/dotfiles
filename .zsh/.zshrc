@@ -158,7 +158,19 @@ ls_abbrev() {
 
 # cd ショートカット
 cdl() {
-  cd -P "$HOME/links/$1"
+  local links="$HOME/links"
+  if [ -n "$1" ] && [ -e "$links/$1" ]; then
+    cd -P "$links/$1"
+  else
+    if builtin command -v peco >/dev/null 2>&1; then
+      local target="$(ls "$links/" | peco --query "$1")"
+      if [ -n "$target" ]; then
+        cdl "$target"
+      fi
+    else
+      warning "No such file: $1"
+    fi
+  fi
 }
 
 # 一時的なシェル環境を示すプロンプト
