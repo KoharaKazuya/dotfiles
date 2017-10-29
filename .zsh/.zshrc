@@ -161,6 +161,12 @@ cdl() {
   cd -P "$HOME/links/$1"
 }
 
+# 一時的なシェル環境を示すプロンプト
+setenv() {
+  PROMPT="%F{yellow}($*)%f $PROMPT"
+  set-terminal-background-color 0 0 30
+}
+
 # zsh の再読込用関数
 alias reload='exec zsh -l'
 
