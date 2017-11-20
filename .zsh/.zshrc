@@ -173,6 +173,55 @@ cdl() {
   fi
 }
 
+# git リポジトリのルートディレクトリに移動する cd
+cdr() {
+  if ! git rev-parse >/dev/null 2>&1; then
+    warning "current dir isn't under Git repository: $(pwd)"
+    return 1
+  fi
+  cd "$(git rev-parse --show-toplevel)"
+}
+
+# git で変更点があるファイルのあるディレクトリに移動する cd
+cdg() {
+  if ! builtin command -v peco >/dev/null; then
+    printf '[33mThis command depends on [1;3mpeco[0m\n'
+    exit 1
+  fi
+
+  local target="$( \
+    git status --short \
+      | sed -E 's/^...//' \
+      | grep '/' \
+      | sed -E 's%/[^/]*$%%' \
+      | sort \
+      | uniq \
+      | peco --query "$*"
+  )"
+  if [ -n "$target" ]; then
+    cd "$target"
+  fi
+}
+
+cdghq() {
+  if ! builtin command -v ghq >/dev/null; then
+    printf '[33mThis command depends on [1;3mghq[0m\n'
+    exit 1
+  fi
+  if ! builtin command -v peco >/dev/null; then
+    printf '[33mThis command depends on [1;3mpeco[0m\n'
+    exit 1
+  fi
+
+  local target="$( \
+    ghq list \
+      | peco --query "$*"
+  )"
+  if [ -n "$target" ]; then
+    cd "$HOME/.ghq/$target"
+  fi
+}
+
 # 一時的なシェル環境を示すプロンプト
 setenv() {
   PROMPT="%F{yellow}($*)%f $PROMPT"
