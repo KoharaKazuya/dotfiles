@@ -1,0 +1,25 @@
+aws-profile() {
+  if ! builtin command -v aws >/dev/null 2>&1; then
+    error 'aws command not found'
+    return 1
+  fi
+
+  local creds="$HOME/.aws/credentials"
+  if ! [ -f "$creds" ]; then
+    error "aws credential file not found at $creds"
+    return 1
+  fi
+
+  local profiles="$(cat "$creds" | grep -E '^\[.*\]$' | sed -E 's/^\[(.*)\]$/\1/')"
+
+  if builtin command -v peco >/dev/null 2>&1; then
+    local p="$(echo "$profiles" | peco --query "$*")"
+    if [ -n "$p" ]; then
+      export AWS_PROFILE="$p"
+    fi
+  else
+    echo "$profiles"
+  fi
+
+  printf 'Current profile: \e[1;3m%s\e[0m\n' "$AWS_PROFILE"
+}
