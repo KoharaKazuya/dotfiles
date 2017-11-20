@@ -1,11 +1,11 @@
 cdghq() {
   if ! builtin command -v ghq >/dev/null; then
     printf '[33mThis command depends on [1;3mghq[0m\n'
-    exit 1
+    return 1
   fi
   if ! builtin command -v peco >/dev/null; then
     printf '[33mThis command depends on [1;3mpeco[0m\n'
-    exit 1
+    return 1
   fi
 
   local target="$( \
