@@ -1,0 +1,20 @@
+# git で変更点があるファイルのあるディレクトリに移動する cd
+cdg() {
+  if ! builtin command -v peco >/dev/null; then
+    printf '[33mThis command depends on [1;3mpeco[0m\n'
+    exit 1
+  fi
+
+  local target="$( \
+    git status --short \
+      | sed -E 's/^...//' \
+      | grep '/' \
+      | sed -E 's%/[^/]*$%%' \
+      | sort \
+      | uniq \
+      | peco --query "$*"
+  )"
+  if [ -n "$target" ]; then
+    cd "$target"
+  fi
+}

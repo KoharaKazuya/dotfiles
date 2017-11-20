@@ -1,0 +1,8 @@
+# git リポジトリのルートディレクトリに移動する cd
+cdr() {
+  if ! git rev-parse >/dev/null 2>&1; then
+    warning "current dir isn't under Git repository: $(pwd)"
+    return 1
+  fi
+  cd "$(git rev-parse --show-toplevel)"
+}

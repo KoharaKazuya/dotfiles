@@ -63,16 +63,9 @@ man() {
 }
 
 # 自作コマンド群を読み込む
-source "$ZDOTDIR/functions/"*
-
-# zsh のマニュアルを検索する
-# 参考: <http://qiita.com/mollifier/items/14bbea7503910300b3ba>
-#       他で MANPAGER を定義しているため、PAGER の設定が反映されないため MANPAGER に変更
-zman() {
-  env \
-    MANPAGER="less -g '+/^       $1'" \
-    man zshall
-}
+for f in "$ZDOTDIR/functions/"*; do
+  source "$f"
+done
 
 # peco hitory
 if builtin command -v peco > /dev/null ; then
@@ -159,77 +152,6 @@ ls_abbrev() {
     fi
 }
 
-# cd ショートカット
-cdl() {
-  local links="$HOME/links"
-  if [ -n "$1" ] && [ -e "$links/$1" ]; then
-    cd -P "$links/$1"
-  else
-    if builtin command -v peco >/dev/null 2>&1; then
-      local target="$(ls "$links/" | peco --query "$1")"
-      if [ -n "$target" ]; then
-        cdl "$target"
-      fi
-    else
-      warning "No such file: $1"
-    fi
-  fi
-}
-
-# git リポジトリのルートディレクトリに移動する cd
-cdr() {
-  if ! git rev-parse >/dev/null 2>&1; then
-    warning "current dir isn't under Git repository: $(pwd)"
-    return 1
-  fi
-  cd "$(git rev-parse --show-toplevel)"
-}
-
-# git で変更点があるファイルのあるディレクトリに移動する cd
-cdg() {
-  if ! builtin command -v peco >/dev/null; then
-    printf '[33mThis command depends on [1;3mpeco[0m\n'
-    exit 1
-  fi
-
-  local target="$( \
-    git status --short \
-      | sed -E 's/^...//' \
-      | grep '/' \
-      | sed -E 's%/[^/]*$%%' \
-      | sort \
-      | uniq \
-      | peco --query "$*"
-  )"
-  if [ -n "$target" ]; then
-    cd "$target"
-  fi
-}
-
-cdghq() {
-  if ! builtin command -v ghq >/dev/null; then
-    printf '[33mThis command depends on [1;3mghq[0m\n'
-    exit 1
-  fi
-  if ! builtin command -v peco >/dev/null; then
-    printf '[33mThis command depends on [1;3mpeco[0m\n'
-    exit 1
-  fi
-
-  local target="$( \
-    ghq list \
-      | peco --query "$*"
-  )"
-  if [ -n "$target" ]; then
-    cd "$HOME/.ghq/$target"
-  fi
-}
-
-# 一時的なシェル環境を示すプロンプト
-setenv() {
-  PROMPT="%F{yellow}($*)%f $PROMPT"
-  set-terminal-background-color 0 0 30
-}
 
 # zsh の再読込用関数
 alias reload='exec zsh -l'
@@ -311,29 +233,6 @@ if [ $SYS_NOTIFIER ]; then
   source $ZDOTDIR/zsh-notify/notify.plugin.zsh
 fi
 
-## ターミナルの背景色を変更する
-set-terminal-background-color() {
-  if [ $# != 3 ]; then
-    echo '背景色を 3 つの引数で指定してください' >&2
-    return 1
-  fi
-
-  # macOS のみ実行する
-  if [ -x /usr/bin/osascript ]; then
-    local r g b
-    r=$(($1 * 65535 / 255))
-    g=$(($2 * 65535 / 255))
-    b=$(($3 * 65535 / 255))
-
-    /usr/bin/osascript <<EOS
-tell application "iTerm"
-  tell current session of current window
-    set background color to {$r, $g, $b}
-  end tell
-end tell
-EOS
-  fi
-}
 
 # $fpath から補完関数を読み込む
 compinit

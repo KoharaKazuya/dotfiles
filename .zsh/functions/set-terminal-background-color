@@ -1,0 +1,23 @@
+## ターミナルの背景色を変更する
+set-terminal-background-color() {
+  if [ $# != 3 ]; then
+    echo '背景色を 3 つの引数で指定してください' >&2
+    return 1
+  fi
+
+  # macOS のみ実行する
+  if [ -x /usr/bin/osascript ]; then
+    local r g b
+    r=$(($1 * 65535 / 255))
+    g=$(($2 * 65535 / 255))
+    b=$(($3 * 65535 / 255))
+
+    /usr/bin/osascript <<EOS
+tell application "iTerm"
+  tell current session of current window
+    set background color to {$r, $g, $b}
+  end tell
+end tell
+EOS
+  fi
+}
