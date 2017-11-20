@@ -62,6 +62,9 @@ man() {
     man "$@"
 }
 
+# 自作コマンド群を読み込む
+source "$ZDOTDIR/functions/"*
+
 # zsh のマニュアルを検索する
 # 参考: <http://qiita.com/mollifier/items/14bbea7503910300b3ba>
 #       他で MANPAGER を定義しているため、PAGER の設定が反映されないため MANPAGER に変更
