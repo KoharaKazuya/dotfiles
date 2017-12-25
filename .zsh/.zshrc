@@ -114,7 +114,7 @@ chpwd() {
 }
 ## カレントディレクトリに README ファイルがあれば表示する
 cat_readme() {
-  (IFS='\n'; for f in $(ls | grep -i 'readme'); do
+  (IFS=$'\n'; for f in $(ls | grep -i 'readme'); do
     if file "$f" | grep text >/dev/null 2>&1; then
       printf '\e[38;5;008m%s\e[0m\n' "$f"
       cat "$f" | awk '{print}' | head -n 20
