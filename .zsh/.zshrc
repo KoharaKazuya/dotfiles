@@ -235,7 +235,7 @@ fi
 
 
 # $fpath から補完関数を読み込む
-compinit
+autoload -Uz compinit && compinit
 
 
 # zsh プロファイラが読み込まれていたら、ロード完了時に
