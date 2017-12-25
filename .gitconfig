@@ -53,7 +53,7 @@
     coi = checkout-issue
     reb = clean-rebase
     rev = rev-parse --short --default HEAD
-    imgdiff = -c 'diff.image.command = imgdiff --reverse' -c 'core.pager =' diff
+    imgdiff = -c 'diff.image.command = imgdiff --reverse' -c 'core.pager =' diff --diff-filter=M
     # 人間らしいエイリアス (http://postd.cc/human-git-aliases/)
     unstage = reset --quiet HEAD --
     discard = checkout --
