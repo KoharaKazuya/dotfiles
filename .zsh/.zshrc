@@ -124,16 +124,17 @@ cat_readme() {
 }
 ## 候補数が多すぎる時に省略される ls
 ls_abbrev() {
-    # -a : Do not ignore entries starting with ..
+    # -t : Sort by time modified.
+    # -A : Do not ignore entries starting with . except for . and ..
     # -C : Force multi-column output.
     # -F : Append indicator (one of */=>@|) to entries.
     local cmd_ls='ls'
     local -a opt_ls
-    opt_ls=('-aCF' '--color=always')
+    opt_ls=('-tACF' '--color=always')
     case "${OSTYPE}" in
         freebsd*|darwin*)
               # -G : Enable colorized output.
-              opt_ls=('-aCFG')
+              opt_ls=('-tACFG')
             ;;
     esac
 
@@ -142,11 +143,10 @@ ls_abbrev() {
 
     local ls_lines=$(echo "$ls_result" | wc -l | tr -d ' ')
 
-    if [ $ls_lines -gt 5 ]; then
+    if [ $ls_lines -gt 3 ]; then
         echo "$ls_result" | head -n 3
         echo '...'
-        echo "$ls_result" | tail -n 2
-        echo "$(command ls -1 -A | wc -l | tr -d ' ') files exist"
+        echo "$(command ls -1 -A | wc -l | tr -d ' ') entries exist"
     else
         echo "$ls_result"
     fi
