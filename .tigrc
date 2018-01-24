@@ -17,3 +17,6 @@ set horizontal-scroll = 20%
 
 # マウスを有効化
 set mouse = yes
+
+# refs view で x を押すとブランチ名をコピーするように
+bind refs x !@sh -c 'printf "%s" "%(ref)" | pbcopy'
