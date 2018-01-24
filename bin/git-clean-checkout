@@ -10,14 +10,13 @@ else
   printf '\e[33m%s\e[0m\n' 'Found not commited files. Update steps will be skipped' >&2
 fi
 
+# リモートの状態を取得
+git _processing 'f' 'Fetching' git f
 if $clean; then
   # デフォルトブランチに切り替え
   git cod
   # デフォルトブランチをアップデート
   git _processing 'cc' "Pulling" git -c color.diff=always pl
-else
-  # リモートの状態を取得
-  git _processing 'f' 'Fetching' git f
 fi
 
 # マージ済みブランチの削除
