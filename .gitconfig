@@ -60,7 +60,7 @@
     nevermind = !git reset --hard HEAD && git clean -dff
     uncommit = reset --mixed HEAD~
     save = commit --message
-    resave = commit --amend
+    resave = commit --amend --reset-author
     tags = tag
     branches = branch --all
     stashes = stash list
