@@ -20,3 +20,6 @@ set mouse = yes
 
 # refs view で x を押すとブランチ名をコピーするように
 bind refs x !@sh -c 'printf "%s" "%(ref)" | pbcopy'
+
+# main view で c を押すとブランチを切り替えられるように
+bind main C ?git checkout %(branch)
