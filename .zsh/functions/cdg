@@ -5,16 +5,31 @@ cdg() {
     return 1
   fi
 
-  local target="$( \
-    git status --short \
-      | sed -E 's/^...//' \
-      | grep '/' \
-      | sed -E 's%/[^/]*$%%' \
-      | sort \
-      | uniq \
-      | peco --query "$*"
-  )"
+  local target
+  if [ "$1" = '-a' ]; then
+    shift
+    target="$( \
+      git ls-files \
+        | grep '/' \
+        | sed -E 's%/[^/]*$%%' \
+        | sort \
+        | uniq \
+        | peco --query "$*"
+    )"
+  else
+    target="$( \
+      git status --short \
+        | sed -E 's/^...//' \
+        | grep '/' \
+        | sed -E 's%/[^/]*$%%' \
+        | sort \
+        | uniq \
+        | peco --query "$*"
+    )"
+  fi
   if [ -n "$target" ]; then
     cd "$target"
   fi
 }
+
+alias cdga='cdg -a'
