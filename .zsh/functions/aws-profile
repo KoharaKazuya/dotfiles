@@ -1,4 +1,10 @@
 aws-profile() {
+  if [ "$1" = "-u" ]; then
+    unset AWS_PROFILE
+    printf 'Unset profile\n'
+    return 0
+  fi
+
   if ! builtin command -v aws >/dev/null 2>&1; then
     error 'aws command not found'
     return 1
