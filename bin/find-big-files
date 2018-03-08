@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -eu
+
+target_dir="."
+if [ $# -gt 0 ]; then
+  target_dir="$1"
+fi
+
+find "$target_dir" -type f -not -name '.DS_Store' \
+  | xargs -I{} wc -c {} \
+  | sort -nr \
+  | head
