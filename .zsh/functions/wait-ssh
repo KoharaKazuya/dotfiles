@@ -1,0 +1,4 @@
+# 接続が成功するまでリトライし続ける ssh
+wait-ssh() {
+  while ! ssh -o 'ConnectTimeout 5' "$@" true; do sleep 1; done
+}
