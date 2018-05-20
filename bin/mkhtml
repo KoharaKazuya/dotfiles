@@ -69,12 +69,21 @@ out '<!-- <link rel="icon" href="{{ favicon.ico }}"> -->'
 
 # スタイルシート
 # --------------
-# Reset CSS for minimalist (internal CSS)
 out '<style>'
+out '  /* Reset CSS <https://benfrain.com/a-modern-css-reset-with-caveats> */'
 out '  * {'
-out '    margin: 0;'
-out '    padding: 0;'
+out '    all: unset;'
+out '  }'
+out '  base, basefont, datalist, head, meta, script, style, title, noembed, param, template {'
+out '    display: none;'
+out '  }'
+out '  /* My basic global CSS */'
+out '  html {'
+out '    -webkit-text-size-adjust: 100%; /* iOS 8+ */'
 out '    box-sizing: border-box;'
+out '  }'
+out '  *, *::before, *::after {'
+out '    box-sizing: inherit;'
 out '  }'
 out '</style>'
 # CSS ホルダー
