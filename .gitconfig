@@ -12,8 +12,6 @@
     showUntrackedFiles = all
 [push]
     default = current
-[remote]
-    pushDefault = origin
 [gui]
     encoding = UTF-8
 [color]
@@ -44,7 +42,7 @@
     mc = merged-clean --all
     ms = merge --squash
     pl = pull --ff-only --prune
-    ps = push
+    ps = push origin
     rf = flow release finish
     rs = flow release start
     aff = all-fast-forward-merge
