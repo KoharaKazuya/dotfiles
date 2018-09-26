@@ -24,6 +24,10 @@ WORDCHARS=${WORDCHARS:s/\//}
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^[e' edit-command-line
+## Esc, c でクリップボードをテキストエディタで編集できるように
+_edit-clipboard() { exec < /dev/tty; edit-clipboard; }
+zle -N edit-clipboard _edit-clipboard
+bindkey '^[c' edit-clipboard
 ## 自作補完設定
 fpath=($ZDOTDIR/completion $fpath)
 # 自作コマンドの補完設定を読み込む

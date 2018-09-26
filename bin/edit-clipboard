@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -eu
+
+t="$(mktemp)"
+pbpaste > "$t"
+vim '+set nofixeol noeol' "$t"
+cat "$t" | pbcopy
