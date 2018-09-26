@@ -10,13 +10,13 @@ aws-profile() {
     return 1
   fi
 
-  local creds="$HOME/.aws/credentials"
-  if ! [ -f "$creds" ]; then
-    error "aws credential file not found at $creds"
+  local config="$HOME/.aws/config"
+  if ! [ -f "$config" ]; then
+    error "aws credential file not found at $config"
     return 1
   fi
 
-  local profiles="$(cat "$creds" | grep -E '^\[.*\]$' | sed -E 's/^\[(.*)\]$/\1/')"
+  local profiles="$(cat "$config" | grep -E '^\[profile .*\]$' | sed -E 's/^\[profile (.*)\]$/\1/')"
 
   if builtin command -v peco >/dev/null 2>&1; then
     local p="$(echo "$profiles" | peco --query "$*")"
