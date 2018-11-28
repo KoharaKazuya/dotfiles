@@ -8,4 +8,4 @@ if git show 2>&1 >/dev/null; then
   exit 1
 fi
 
-git commit --allow-empty --message 'First Empty Commit'
+git commit --allow-empty --message 'build: First Empty Commit'
