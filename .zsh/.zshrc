@@ -1,3 +1,9 @@
+# fpath は Zim の初期化の前に設定しておく必要があるため、最初に読み込む
+## 自作補完設定
+fpath=($ZDOTDIR/completion $fpath)
+## 環境依存の fpath 設定ファイルを読み込む
+[ ! -d $HOME/.zsh.local/completion ] || fpath+=($HOME/.zsh.local/completion)
+
 # Zim
 if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
   source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
@@ -28,8 +34,6 @@ bindkey '^[e' edit-command-line
 _edit-clipboard() { exec < /dev/tty; edit-clipboard; }
 zle -N edit-clipboard _edit-clipboard
 bindkey '^[c' edit-clipboard
-## 自作補完設定
-fpath=($ZDOTDIR/completion $fpath)
 # 自作コマンドの補完設定を読み込む
 # autoload -Uz git-_my-compinit && git-_my-compinit
 # ↑ 重い……
@@ -236,10 +240,6 @@ if [ $SYS_NOTIFIER ]; then
   export NOTIFY_COMMAND_COMPLETE_TIMEOUT=10
   source $ZDOTDIR/zsh-notify/notify.plugin.zsh
 fi
-
-
-# $fpath から補完関数を読み込む
-autoload -Uz compinit && compinit
 
 
 # zsh プロファイラが読み込まれていたら、ロード完了時に
