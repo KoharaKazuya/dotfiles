@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+exec git diff --word-diff-regex=$'[^\x80-\xbf][\x80-\xbf]*' --word-diff=color "$@"
