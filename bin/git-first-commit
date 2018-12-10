@@ -2,8 +2,13 @@
 
 set -eu
 
+# Git リポジトリでないなら実行したディレクトリを Git リポジトリとして初期化する
+if ! git rev-parse >/dev/null 2>&1; then
+  git init
+fi
+
 # 最初のコミットになれるかチェック
-if git show 2>&1 >/dev/null; then
+if git show >/dev/null 2>&1; then
   printf '\e[33m%s\e[0m\n' 'Already commited'
   exit 1
 fi
