@@ -1,9 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-if [ $# -ne 1 ]; then
-  printf "usage: $(basename "$0") <pull_request_number> \n" >&2
-fi
-
-git fetch upstream pull/$1/head:pr/$1
