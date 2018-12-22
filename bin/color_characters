@@ -7,48 +7,43 @@ h() {
 }
 
 p() {
-  code="$1"
-  description="$2"
-
-  printf "%10s -- %s  [${code}サンプル\e[0m]\n" "$code" "$description"
+  printf "%20s -- [$(eval $1)サンプル$(tput sgr0)]\n" "$1"
 }
 
 h '装飾'
-p  '\e[0m' 'リセット   '
-p  '\e[1m' '強調       '
-p  '\e[2m' '弱化       '
-p  '\e[3m' '斜体       '
-p  '\e[4m' '下線       '
-p  '\e[5m' '点滅       '
-p  '\e[6m' '点滅 (高速)'
-p  '\e[7m' '反転       '
-p  '\e[8m' '非表示     '
-p  '\e[9m' '取り消し   '
+p 'tput sgr0'
+p 'tput bold'
+p 'tput dim'
+p 'tput sitm'
+p 'tput smul'
+p 'tput blink'
+p 'tput rev'
+# p  '\e[0m' 'リセット   '
+# p  '\e[1m' '強調       '
+# p  '\e[2m' '弱化       '
+# p  '\e[3m' '斜体       '
+# p  '\e[4m' '下線       '
+# p  '\e[5m' '点滅       '
+# p  '\e[6m' '点滅 (高速)'
+# p  '\e[7m' '反転       '
+# p  '\e[8m' '非表示     '
+# p  '\e[9m' '取り消し   '
 
 h '前景'
-p '\e[30m' '黒         '
-p '\e[31m' '赤         '
-p '\e[32m' '緑         '
-p '\e[33m' '黄         '
-p '\e[34m' '青         '
-p '\e[35m' 'マゼンタ   '
-p '\e[36m' 'シアン     '
-p '\e[37m' '白         '
-p '\e[39m' 'デフォルト '
+for i in $(seq 0 7); do
+  p "tput setaf $i"
+done
 
 h '後景'
-p '\e[40m' '黒         '
-p '\e[41m' '赤         '
-p '\e[42m' '緑         '
-p '\e[43m' '黄         '
-p '\e[44m' '青         '
-p '\e[45m' 'マゼンタ   '
-p '\e[46m' 'シアン     '
-p '\e[47m' '白         '
-p '\e[49m' 'デフォルト '
+for i in $(seq 0 7); do
+  p "tput setab $i"
+done
 
 h '組み合わせ'
-p '\e[33;1m' '警告       '
-p '\e[32;4m' 'リンク     '
+p 'tput setaf 3; tput bold' '警告'
+p 'tput setaf 2; tput smul' 'リンク'
 
 printf '\n'
+
+echo "$(tput setaf 0)# see manpages"
+echo "$(tput setaf 0)\$$(tput sgr0) $(tput setaf 2)man$(tput sgr0) terminfo"
