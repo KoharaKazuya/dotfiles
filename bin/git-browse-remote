@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -eu
+
+remote_url="$(git config --get remote.origin.url | sed -E "s%^.*(@|://)(.*)[:/](.*/.*).git$%https://\2/\3/%")"
+git web--browse "${remote_url}pull/$(git current-branch | nkf -WwMQ | tr = %)"
