@@ -1,9 +1,14 @@
 # パス設定
-typeset -U path
+typeset -U path manpath
 path=(
-    $HOME/bin
+    $HOME/bin(N-/)
     $HOME/projects/dotfiles/bin
     $path
+)
+manpath=(
+    $HOME/man(N-/)
+    $HOME/projects/dotfiles/man
+    $manpath
 )
 
 # 強調 echo
