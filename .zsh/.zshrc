@@ -125,7 +125,12 @@ cat_readme() {
   (IFS=$'\n'; for f in $(ls | grep -i 'readme'); do
     if file "$f" | grep text >/dev/null 2>&1; then
       printf '[0;2m%s[0m\n' "$f"
-      cat "$f" | awk '{print}' | head -n 20
+      # Markdown ファイルは mdcat コマンドで表示する
+      if echo "$f" | grep -E '\.md$' >/dev/null 2>&1 && builtin command -v mdcat >/dev/null 2>&1; then
+        mdcat --local "$f" 2>/dev/null | head -n 10
+      else
+        cat "$f" | awk '{print}' | head -n 10
+      fi
       printf '[0;2;4m%s[0m\n\n' "${(r:COLUMNS:: :)}"
     fi
   done)
