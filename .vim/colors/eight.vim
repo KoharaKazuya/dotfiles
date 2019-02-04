@@ -14,13 +14,13 @@ hi IncSearch     cterm=NONE ctermfg=0 ctermbg=3
 hi Search        cterm=NONE ctermfg=0 ctermbg=3
 " hi MoreMsg       ctermfg=darkgreen
 " hi ModeMsg       cterm=NONE ctermfg=brown
-hi LineNr        ctermfg=7 ctermbg=0
+hi LineNr        ctermfg=7
 " hi Question      ctermfg=green
 " hi StatusLine    cterm=bold,reverse
 " hi StatusLineNC  cterm=reverse
 " hi VertSplit     cterm=reverse
 " hi Title         ctermfg=5
-hi Visual        ctermbg=0
+" hi Visual        term=reverse ctermbg=242 guibg=DarkGrey
 " hi VisualNOS     cterm=bold,underline
 " hi WarningMsg    ctermfg=1
 " hi WildMenu      ctermfg=0 ctermbg=3
@@ -30,7 +30,7 @@ hi Visual        ctermbg=0
 " hi DiffChange    ctermbg=5
 " hi DiffDelete    cterm=bold ctermfg=4 ctermbg=6
 " hi DiffText      cterm=bold ctermbg=1
-hi Comment       ctermfg=0
+hi Comment       ctermfg=6
 hi Constant      ctermfg=1
 hi Special       cterm=bold ctermfg=1
 hi Identifier    ctermfg=4
@@ -38,5 +38,5 @@ hi Statement     ctermfg=3
 hi PreProc       ctermfg=5
 hi Type          ctermfg=2
 hi Underlined    cterm=underline
-hi Ignore        ctermfg=0
+hi Ignore        ctermfg=6
 hi Error         cterm=bold ctermfg=7 ctermbg=1
