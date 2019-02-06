@@ -17,7 +17,7 @@
 [color]
     ui = auto
 [mailmap]
-    file = ~/.git.mailmap
+    file = ~/.config/git/.mailmap
 [alias]
     a  = add --all
     b  = branch
@@ -77,6 +77,3 @@
     smudge = git-lfs smudge -- %f
 [private]
     default-branch = master
-
-[include]
-    path = ~/.gitconfig.local

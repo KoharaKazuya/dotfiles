@@ -33,7 +33,7 @@ for f in "$0.d"/*.sh; do
   fi
 done
 # ローカル依存の git-hooks を読み込み
-for f in "$HOME/.git-templates/hooks.local/$(basename "$0").d"/*.sh; do
+for f in "$HOME/.config/git/templates/hooks.local/$(basename "$0").d"/*.sh; do
   if test -f "$f"; then
     source "$f"
   fi
