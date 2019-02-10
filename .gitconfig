@@ -77,3 +77,6 @@
     smudge = git-lfs smudge -- %f
 [private]
     default-branch = master
+
+[include]
+    path = ~/.config/git/config
