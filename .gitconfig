@@ -10,6 +10,8 @@
     attributesfile = ~/.gitattributes
 [status]
     showUntrackedFiles = all
+[log]
+    date = iso-local
 [push]
     default = current
 [gui]
