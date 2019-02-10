@@ -8,6 +8,8 @@
     precomposeunicode = true
     ignorecase = false
     attributesfile = ~/.gitattributes
+[init]
+    templatedir = ~/.config/git/template
 [status]
     showUntrackedFiles = all
 [log]
