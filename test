@@ -1,4 +1,6 @@
-#!/bin/zsh -eul
+#!/bin/zsh -li
+
+set -euo pipefail
 
 success=true
 

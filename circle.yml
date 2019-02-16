@@ -1,9 +1,0 @@
-dependencies:
-  pre:
-    - sudo apt-get install zsh
-    - sudo sed -i -e '/@include common-auth/d' /etc/pam.d/chsh
-    - chsh -s /bin/zsh
-test:
-  override:
-    - curl https://raw.githubusercontent.com/KoharaKazuya/dotfiles/master/install.sh | sh
-    - ~/projects/dotfiles/test

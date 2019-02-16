@@ -1,0 +1,17 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: buildpack-deps:18.04
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: apt-get update && apt-get install -y zsh
+      - run:
+          name: Install
+          command: curl https://raw.githubusercontent.com/KoharaKazuya/dotfiles/master/install.sh | sh
+      - run:
+          name: Test
+          command: ~/projects/dotfiles/test
