@@ -13,6 +13,9 @@ set autoindent    " 改行時に前の行のインデントを継続する
 set smartindent   " 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
 set showcmd       " 入力途中のコマンドを表示する
 set cursorline    " カーソルがある行を強調する
+" 一行 80 文字以上は背景色を変える
+highlight OverLength term=reverse ctermbg=238 guibg=DarkGrey
+match OverLength /\%>81v/
 
 " 検索設定
 set incsearch   " インクリメンタルサーチを行う
