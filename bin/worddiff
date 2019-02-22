@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+if [ "$1" = "-c" ]; then
+  shift
+  exec git diff --no-index --word-diff-regex=$'[^\x80-\xbf][\x80-\xbf]*' --word-diff=color -- "$@"
+else
+  exec git diff --no-index                                               --word-diff=color -- "$@"
+fi
