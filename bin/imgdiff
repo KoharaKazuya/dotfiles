@@ -59,8 +59,8 @@ while [ $# -gt 0 ]; do
 done
 
 # 環境チェック
-if ! builtin command -v compare >/dev/null; then
-  printf 'Required: ImageMagick\n' >&2
+if ! builtin command -v gm >/dev/null && ! builtin command -v compare >/dev/null; then
+  printf 'Required: GraphicsMagick or ImageMagick\n' >&2
   exit 1
 fi
 if ! builtin command -v imgcat >/dev/null; then
@@ -92,8 +92,15 @@ else
   new_img="$2"
 fi
 
-composite -compose difference "$old_img" "$new_img" png:- \
-  | mogrify -auto-level -write - - \
-  | composite -dissolve 10% "$old_img" - png:- \
-  | montage -geometry +0+0 -background "gray" -border 4 -bordercolor "black" "$old_img" - "$new_img" png:- \
-  | imgcat
+if builtin command -v gm >/dev/null; then
+  gm composite -compose difference "$old_img" "$new_img" png:- \
+    | gm composite -dissolve 10% "$old_img" - png:- \
+    | gm montage -geometry +0+0 -background "gray" -borderwidth 4 -bordercolor "black" "$old_img" - "$new_img" png:- \
+    | imgcat
+else
+  composite -compose difference "$old_img" "$new_img" png:- \
+    | mogrify -auto-level -write - - \
+    | composite -dissolve 10% "$old_img" - png:- \
+    | montage -geometry +0+0 -background "gray" -border 4 -bordercolor "black" "$old_img" - "$new_img" png:- \
+    | imgcat
+fi
