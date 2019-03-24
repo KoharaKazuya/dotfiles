@@ -82,6 +82,8 @@ out '  /* My opinionated global CSS */'
 out '  html {'
 out '    -webkit-text-size-adjust: 100%; /* iOS 8+ */'
 out '    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);'
+out '    font-family: -apple-system, BlinkMacSystemFont, YuGothic, Arial,'
+out '      "メイリオ", Meiryo, sans-serif;'
 out '  }'
 out '</style>'
 # CSS ホルダー
