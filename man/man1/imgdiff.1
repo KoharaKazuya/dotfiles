@@ -1,0 +1,25 @@
+.TH imgdiff 1 2019-01-17 KoharaKazuya "dotfiles Commands Manual"
+.SH NAME
+imgdiff \- compare 2 images and display difference
+.SH SYNOPSIS
+.BR imgdiff
+.RI [ -h | --help ]
+.br
+.BR imgdiff
+.RI [ --verbose ]
+.RI [ -r | --reverse ]
+.RI < old_img >
+.RI < new_img >
+.SH DESCRIPTION
+Compare 2 images and display difference.
+.TP
+\fB-h\fR  \fB--help\fR
+Print this help.
+.TP
+\fB--verbose\fR
+Enables verbose mode.
+.TP
+\fB-r\fR  \fB--reverse\fR
+Reverse position of old_img and new_img.
+.SH EXAMPLE
+imgdiff sample1.png sample2.png
