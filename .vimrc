@@ -29,3 +29,7 @@ endif
 " インデント設定
 set tabstop=2
 set shiftwidth=2
+
+" Modeline を有効にする
+set modeline
+set modelines=5  " macOS ではデフォルトで modeline=0 となっているので上書き
