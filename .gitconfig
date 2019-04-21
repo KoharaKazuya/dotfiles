@@ -14,6 +14,8 @@
     showUntrackedFiles = all
 [log]
     date = iso-local
+[commit]
+    template = ~/.gitmessage
 [push]
     default = current
 [gui]
