@@ -26,15 +26,14 @@ changed_files_by_merge() {
   git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD
 }
 
-# ファイル名と同名のディレクトリの中身を全て読み込む
-for f in "$0.d"/*.sh; do
-  if test -f "$f"; then
-    source "$f"
-  fi
-done
-# ローカル依存の git-hooks を読み込み
-for f in "$HOME/.config/git/hooks/$(basename "$0").d"/*.sh; do
-  if test -f "$f"; then
-    source "$f"
-  fi
+# ファイル名と同名のディレクトリ (ローカル版も含め) 中身を全て読み込む
+for f in "$0.d"/*.sh "$HOME/.config/git/hooks/$(basename "$0").d"/*.sh; do
+  varname="$(basename "$f" | sed -E 's/^/GIT_HOOKS_IGNORE_&/;s/\.sh//;s/-/_/g' | tr '[a-z]' '[A-Z]')"
+  # glob にマッチしなかった場合はスキップ
+  if [ "$varname" = 'GIT_HOOKS_IGNORE_*' ]; then continue; fi
+  # 無視のための変数が定義されていればスキップ
+  if eval echo '${'$varname':-}' | grep . >/dev/null 2>&1; then continue; fi
+  # ファイルでなければスキップ
+  if ! test -f "$f"; then continue; fi
+  source "$f"
 done

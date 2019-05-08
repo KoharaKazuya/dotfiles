@@ -1,4 +1,4 @@
-if [ "${GIT_HOOKS_IGNORE_TODO-}" = "" ] && git diff --cached --unified=0 | grep '^\+' | grep -iE 'todo|fixme' >/dev/null 2>&1; then
+if git diff --cached --unified=0 | grep '^\+' | grep -iE 'todo|fixme' >/dev/null 2>&1; then
   exec >&2
   yellow="$(tput setaf 3)"
   rev="$(tput rev)"
