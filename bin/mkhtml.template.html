@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<!-- <meta property="og:title" content="{{ page-title }}"> -->
+<!-- <meta property="og:type"  content="{{ website/blog/article }}"> -->
+<!-- <meta property="og:url"   content="{{ url-of-this-page }}"> -->
+<!-- <meta property="og:image" content="{{ image-url }}"> -->
+<!-- <link rel="icon" href="{{ favicon.ico }}"> -->
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, YuGothic, Arial, "メイリオ", Meiryo, sans-serif;
+  }
+  .first-responder {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 100%;
+    border: 2px solid gray;
+    border-bottom-color: transparent;
+    animation: rotate 1s linear 0s infinite;
+    margin: 48px auto;
+  }
+  @keyframes rotate {
+      0% { transform: rotate(  0deg); }
+     50% { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+<!-- <link rel="stylesheet" href="{{ xxx.css }}"> -->
+<!-- <script async src="{{ xxx.js }}"></script> -->
+<noscript><p>このページは JavaScript を使用しています。ご使用中のブラウザは JavaScript が無効になっているか、JavaScript に対応していません。JavaScript を有効にするか、JavaScript が使用可能なブラウザでアクセスして下さい。</p></noscript>
+<div class="first-responder"></div>
