@@ -4,7 +4,7 @@ if [ "$(git config private.angular-commit-message-guidelines)" = "false" ]; then
 fi
 
 # Git コマンド自体が自動生成するコミットメッセージに関しては無視するように
-if cat "$1" | head -n1 | grep -E '^(Merge|Revert|fixup!) ' >/dev/null 2>&1; then
+if cat "$1" | head -n1 | grep -E '^(Merge|Revert|fixup!|squash!) ' >/dev/null 2>&1; then
   exit 0
 fi
 
