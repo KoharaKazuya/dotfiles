@@ -8,6 +8,11 @@ if cat "$1" | head -n1 | grep -E '^(Merge|Revert|fixup!|squash!) ' >/dev/null 2>
   exit 0
 fi
 
+# リリースのためのコミットは無視するように
+if cat "$1" | head -n1 | grep -E '^v[0-9]+(.[0-9]+)*' >/dev/null 2>&1; then
+  exit 0
+fi
+
 # 共通コミットメッセージフォーマットチェック
 format_regexp='^(build|ci|docs|feat|fix|perf|refactor|style|test)(\(.*\))?: .*$'
 if cat "$1" | head -n1 | grep -vE "$format_regexp" >/dev/null 2>&1; then
