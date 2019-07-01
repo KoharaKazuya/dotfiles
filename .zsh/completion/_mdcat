@@ -1,0 +1,5 @@
+#compdef mdcat
+
+_mdcat() {
+  _files -g "*.md"
+}
