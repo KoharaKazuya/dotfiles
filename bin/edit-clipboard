@@ -4,5 +4,5 @@ set -eu
 
 t="$(mktemp)"
 pbpaste > "$t"
-vim '+set nofixeol noeol syntax=markdown' "$t"
+vim '+set nofixeol noeol syntax=markdown filetype=markdown' "$t"
 cat "$t" | pbcopy
