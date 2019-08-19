@@ -2,9 +2,25 @@
 
 set -eu
 
-if [ "$1" = "-c" ]; then
-  shift
-  exec git diff --no-index --word-diff-regex=$'[^\x80-\xbf][\x80-\xbf]*' --word-diff=color -- "$@"
-else
-  exec git diff --no-index                                               --word-diff=color -- "$@"
-fi
+script_dir="$(cd $(dirname "$0"); pwd)"
+type="smart"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -g | --git       ) type="git";;
+        -c | --character ) type="character";;
+        -h | --help      ) exec man "$(basename "$0")";;
+             --verbose   ) set -x;;
+        --               ) shift; break;;
+        -*               ) printf "Illegal option: $1\n" >&2; exit 1;;
+        *                ) break;;
+    esac
+    shift
+done
+
+case "$type" in
+    git       ) git diff --no-index --word-diff=color -- "$@";;
+    character ) git diff --no-index --color-words=$'[^\x80-\xbf][\x80-\xbf]*' -- "$@";;
+    smart     ) git diff --no-index --color-words=$'[a-zA-Z0-9]+|[^\x80-\xbf][\x80-\xbf]*' -- "$@";;
+    *         ) break;;
+esac
