@@ -1,6 +1,7 @@
 aws-profile() {
   if [ "$1" = "-u" ]; then
     unset AWS_PROFILE
+    unset AWS_SDK_LOAD_CONFIG
     printf 'Unset profile\n'
     return 0
   fi
@@ -22,6 +23,7 @@ aws-profile() {
     local p="$(echo "$profiles" | peco --query "$*")"
     if [ -n "$p" ]; then
       export AWS_PROFILE="$p"
+      export AWS_SDK_LOAD_CONFIG=1
     fi
   else
     echo "$profiles"
