@@ -16,6 +16,9 @@ set cursorline    " カーソルがある行を強調する
 " 一行 80 文字以上は背景色を変える
 highlight OverLength term=reverse ctermbg=238 guibg=DarkGrey
 match OverLength /\%<120v.\%>81v/
+" 全角スペースを強調表示する
+highlight IdeographicSpace term=reverse ctermbg=238 guibg=DarkGrey
+match IdeographicSpace /　/
 
 " 検索設定
 set incsearch   " インクリメンタルサーチを行う
