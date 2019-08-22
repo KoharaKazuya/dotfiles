@@ -28,7 +28,7 @@
     a  = add --all
     b  = branch
     c  = commit --message
-    d  = diff --color-words
+    d  = diff --color-words='[a-zA-Z0-9]+|[^a-zA-Z0-9 ]+'
     f  = fetch --all --prune --tags
     l  = log --oneline
     m  = merge --no-ff --no-edit
@@ -41,7 +41,7 @@
     cc = clean-checkout
     co = checkout --quiet
     cp = cherry-pick
-    dc = diff --color-words --cached
+    dc = diff --color-words='[a-zA-Z0-9]+|[^a-zA-Z0-9 ]+' --cached
     fc = first-commit
     ff = flow feature finish
     fs = flow feature start
