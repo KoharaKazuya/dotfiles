@@ -1,4 +1,8 @@
 aws-profile() {
+  unset AWS_ACCESS_KEY_ID
+  unset AWS_SECRET_ACCESS_KEY
+  unset AWS_SESSION_TOKEN
+
   if [ "$1" = "-u" ]; then
     unset AWS_PROFILE
     unset AWS_SDK_LOAD_CONFIG

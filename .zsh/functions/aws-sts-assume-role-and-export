@@ -1,0 +1,8 @@
+aws-sts-assume-role-and-export() {
+  local role_arn="$(aws configure get role_arn)"
+  local response="$(aws sts assume-role --role-arn "$role_arn" --role-session-name "aws-sts-assume-role-and-export-session-$(date '+%s')" --query '[Credentials.AccessKeyId, Credentials.SecretAccessKey, Credentials.SessionToken]' --output text)"
+
+  export AWS_ACCESS_KEY_ID="$(echo "$response" | cut -f1)"
+  export AWS_SECRET_ACCESS_KEY="$(echo "$response" | cut -f2)"
+  export AWS_SESSION_TOKEN="$(echo "$response" | cut -f3)"
+}
