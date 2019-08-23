@@ -127,8 +127,10 @@ function cd() {
 # cd したときに自動で ls を表示する
 ## ディレクトリ移動時に ls を実行する
 chpwd() {
+  if [ -t 1 ]; then
     cat_readme
     ls_abbrev
+  fi
 }
 ## カレントディレクトリに README ファイルがあれば表示する
 cat_readme() {
