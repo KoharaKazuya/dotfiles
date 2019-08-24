@@ -13,6 +13,9 @@ fi
 zstyle ':zim:git-info' verbose 'yes'
 ### ヒストリファイルのディレクトリを変更する
 HISTFILE="$HOME/.zsh_history"
+### zsh-history-substring-search の機能を ctrl-p, ctrl-n の移動のときにも使うように
+bindkey -M emacs '^P' history-substring-search-up
+bindkey -M emacs '^N' history-substring-search-down
 
 
 # zsh オプション設定
