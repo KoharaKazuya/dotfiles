@@ -16,9 +16,7 @@ fi
 url="$1"
 if ! echo "$1" | grep -E '^https?://' >/dev/null 2>&1; then
   case "$(echo "$1" | grep -o / | wc -l | tr -d ' ')" in
-    0 ) if builtin command -v hub >/dev/null 2>&1 && builtin command -v jq >/dev/null 2>&1; then
-          url="https://github.com/$(hub api user | jq -r .login)/$1"
-        fi
+    0 ) url="https://github.com/KoharaKazuya/$1"
         break;;
     1 ) url="https://github.com/$1"
         break;;
