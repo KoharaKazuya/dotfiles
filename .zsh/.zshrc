@@ -104,7 +104,7 @@ if builtin command -v peco > /dev/null ; then
         zle clear-screen
     }
     zle -N peco-select-history
-    bindkey '^f' peco-select-history
+    bindkey '^r' peco-select-history
 fi
 
 # 絶対パスを記録する cd
