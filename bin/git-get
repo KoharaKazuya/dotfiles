@@ -28,6 +28,8 @@ fi
 path="${2:-}"
 if [ "$path" = "" ]; then
   path="$HOME/git/$(echo "$url" | sed -E 's%^https?://%%')"
+elif [ -d "$path" ]; then
+  path="$path/${url##*/}"
 fi
 
 git clone --depth=1 "$url" "$path"
