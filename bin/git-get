@@ -27,7 +27,7 @@ fi
 
 path="${2:-}"
 if [ "$path" = "" ]; then
-  path="$HOME/git/$(echo "$url" | sed -E 's%^https?://%%')"
+  path="$HOME/git/$(echo "$url" | sed -E 's%^https?://%%;s%\.git$%%')"
 elif [ -d "$path" ]; then
   path="$path/${url##*/}"
 fi
