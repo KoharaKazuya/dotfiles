@@ -33,4 +33,4 @@ elif [ -d "$path" ]; then
 fi
 
 git clone --depth=1 "$url" "$path"
-cd "$path"; nohup git fetch --unshallow >/dev/null 2>&1 &
+cd "$path"; nohup sh -c 'git fetch --unshallow && git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*" && git fetch --all --tags' >/dev/null 2>&1 &
