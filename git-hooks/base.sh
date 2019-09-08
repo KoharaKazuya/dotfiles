@@ -22,8 +22,18 @@ changed_files_by_commit() {
     *            ) exit 1;;
   esac
 }
+added_text_by_commit() {
+  case "$0" in
+    *pre-commit  ) git diff --cached -U0 | sed -n '/^\+\+\+/d;/^\+/s/^\+//p';;
+    *            ) exit 1;;
+  esac
+}
 changed_files_by_merge() {
   git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD
+}
+show_ignore_variable() {
+  varname="$(basename "$f" | sed -E 's/^/GIT_HOOKS_IGNORE_&/;s/\.sh//;s/-/_/g' | tr '[a-z]' '[A-Z]')"
+  printf 'このチェックを無効化するには以下のように環境変数を設定してください\n\n  $ %s=1 git commit ...\n\n' "$varname"
 }
 
 # ファイル名と同名のディレクトリ (ローカル版も含め) 中身を全て読み込む

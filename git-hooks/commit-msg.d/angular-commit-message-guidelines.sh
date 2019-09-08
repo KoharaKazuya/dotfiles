@@ -1,8 +1,3 @@
-# オプションでチェックが無効化されている場合は終了
-if [ "$(git config private.angular-commit-message-guidelines)" = "false" ]; then
-  exit 0
-fi
-
 # Git コマンド自体が自動生成するコミットメッセージに関しては無視するように
 if cat "$1" | head -n1 | grep -E '^(Merge|Revert|fixup!|squash!) ' >/dev/null 2>&1; then
   exit 0
@@ -26,7 +21,7 @@ if cat "$1" | head -n1 | grep -vE "$format_regexp" >/dev/null 2>&1; then
   echo '  Angular Commit Message Guidelines に従ってコミットメッセージを作成してください'
   echo '  https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit'
   echo ''
-  echo '  コミットメッセージのチェックを無効にする場合は `git config private.angular-commit-message-guidelines false` を実行してください'
+  show_ignore_variable
   echo ''
   echo "$rev INFO $reset コミットメッセージガイド"
   echo ''
