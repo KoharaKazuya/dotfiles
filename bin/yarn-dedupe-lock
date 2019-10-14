@@ -8,13 +8,13 @@ if [ ! -f yarn.lock ]; then
 fi
 
 while :; do
+  yarn install --non-interactive
   if [ -z "$(yarn-deduplicate --strategy fewer --list yarn.lock)" ]; then
     break
   fi
 
   echo 'Found Duplicates! Fix Start.' >&2
   yarn-deduplicate --strategy fewer yarn.lock
-  yarn install --non-interactive
 done
 
 echo 'Done! Success.' >&2
