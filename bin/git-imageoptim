@@ -7,7 +7,7 @@ set -eu
 title='Optimize size of images by ImageOptim'
 # このコマンドの意義
 # (最終的なコミットメッセージとして用いる)
-description='この Git リポジトリ中の全ての png 画像ファイルに対し、ファイルサイズの **ロスレス** 圧縮最適化を行う。
+description='refactor: リポジトリ中の png 画像ファイルをファイルサイズの **ロスレス** 圧縮最適化する
 
 全ての変換は画像の劣化、見た目の変化、非対応環境の発生などはしない。
 (GitHub PullRequest の画像プレビュー機能などで変化がないことを確認できる)
