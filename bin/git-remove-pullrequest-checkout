@@ -2,12 +2,12 @@
 
 set -eu
 
-# pr/* ブランチにチェックアウト中であればデフォルトブランチに切り替え
-if git current-branch | grep -E '^pr/' >/dev/null 2>&1; then
+# pr/*, mr/* ブランチにチェックアウト中であればデフォルトブランチに切り替え
+if git current-branch | grep -E '^(pr|mr)/' >/dev/null 2>&1; then
   git checkout-default-branch
 fi
 
-# pr/* ブランチおよびそのリモートへの参照を削除
-git branch --list 'pr/*/*' | sed -E 's%pr/([^/]*)/.*$%\1%' | sort | uniq \
+# pr/*, mr/* ブランチおよびそのリモートへの参照を削除
+git branch --list 'pr/*/*' --list 'mr/*' | sed -E 's%pr/([^/]*)/.*$%\1%;s%mr/(.*)$%\1%' | sort | uniq \
     | xargs -I{} sh -c 'if git remote get-url {} >/dev/null 2>&1; then git remote remove {}; fi'
-git branch --list 'pr/*/*' | xargs git branch -D
+git branch --list 'pr/*/*' --list 'mr/*' | xargs git branch -D
