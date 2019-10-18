@@ -1,9 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-cat - \
-| tr '\t' ' ' \
-| sed -E 's/^ +//' \
-| sed -E 's/ +$//' \
-| sed -E 's/ +/ /g'
