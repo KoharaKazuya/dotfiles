@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+path="$1"
+name="$(echo "$1" | sed -E 's%^.*/%%')"
+
+mkdir -p "./src/components/$path"
+cat "$0.template.tsx" | sed -E "s/__placeholder__/$name/g" > "./src/components/$path/$name.tsx"
