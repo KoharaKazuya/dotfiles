@@ -25,6 +25,9 @@ while [ $# -gt 0 ]; do
 done
 
 
+# リモートブランチの情報を同期する
+git fetch --all --prune --quiet
+
 # リモートに同名のブランチがあるマージ済みブランチ一覧
 target_branches=$( \
   # 現在ブランチを除く、マージ済みブランチ一覧
@@ -33,17 +36,19 @@ target_branches=$( \
   sed -e 's/^ *//' | sed -e 's/ *$//' | \
   # master およびデフォルトブランチはターゲットとしない
   grep -vE '^master$' | grep -vE "^$(git config private.default-branch)$" | \
-  # リモートにも存在するブランチに絞り込む
-  sieve 'git rev-parse remotes/origin/{} >/dev/null 2>&1' | \
-  # ローカルとリモートブランチが同じ HEAD であるものに絞り込む
-  sieve '[ "$(git rev-parse {})" = "$(git rev-parse remotes/origin/{})" ]' \
+  # リモートにもブランチが存在するなら HEAD が同じものに絞り込む
+  while read line; do \
+    if ! git rev-parse remotes/origin/$line >/dev/null 2>&1 || [ "$(git rev-parse $line)" = "$(git rev-parse remotes/origin/$line)" ]; then \
+      echo "$line"; \
+    fi; \
+  done \
 )
 
 # 引数がある場合は、全ての引数をターゲットとする
 if [ $# -gt 0 ]; then
   # 全ての引数がマージ済みブランチかどうかチェック
   for tb in "$@"; do
-    if !(printf "$target_branches\n" | grep "$tb" >/dev/null 2>&1); then
+    if ! (printf "$target_branches\n" | grep "$tb" >/dev/null 2>&1); then
       printf "Is not merged branch: $tb\n" >&2
       exit 1
     fi
@@ -66,5 +71,5 @@ fi
 
 # 全てのターゲットをローカルとリモートから削除
 for tb in $(printf "$target_branches" | tr '\n' ' '); do
-  git _processing 'mc' "Removing $tb" "git push origin :$tb && git branch -d $tb"
+  git _processing 'mc' "Removing $tb" "if git rev-parse remotes/origin/$tb >/dev/null 2>&1; then git push origin :$tb; fi && git branch -d $tb"
 done
