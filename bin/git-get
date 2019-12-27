@@ -13,6 +13,11 @@ if [ $# = 0 ] || echo "$1" | grep -E '^-' >/dev/null 2>&1; then
   exit 1
 fi
 
+if echo "$1" | grep -E '^(ssh://|.*@.*:)' >/dev/null 2>&1; then
+  echo 'No support for SSH protocol' >&2
+  exit 1
+fi
+
 url="$1"
 if ! echo "$1" | grep -E '^https?://' >/dev/null 2>&1; then
   case "$(echo "$1" | grep -o / | wc -l | tr -d ' ')" in
