@@ -24,7 +24,7 @@ aws-profile() {
   local profiles="$(cat "$config" | grep -E '^\[profile .*\]$' | sed -E 's/^\[profile (.*)\]$/\1/')"
 
   if builtin command -v peco >/dev/null 2>&1; then
-    local p="$(echo "$profiles" | peco --query "$*")"
+    local p="$(echo "$profiles" | peco --query "$*" --initial-filter Fuzzy)"
     if [ -n "$p" ]; then
       export AWS_PROFILE="$p"
       export AWS_SDK_LOAD_CONFIG=1

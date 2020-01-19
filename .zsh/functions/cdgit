@@ -4,7 +4,7 @@ cdgit() {
     return 1
   fi
 
-  local target="$(cd "$HOME/git" && echo */*/* | xargs -n1 | peco --query "$*")"
+  local target="$(cd "$HOME/git" && echo */*/* | xargs -n1 | peco --query "$*" --initial-filter Fuzzy)"
   if [ -n "$target" ]; then
     cd "$HOME/git/$target"
   fi

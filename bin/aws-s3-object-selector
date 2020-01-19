@@ -2,7 +2,7 @@
 
 set -eu
 
-bucket="$(aws s3 ls | peco | awk '{print $NF}')"
+bucket="$(aws s3 ls | peco --initial-filter Fuzzy | awk '{print $NF}')"
 if [ -z "$bucket" ]; then
   echo 'No bucket' >&2
   exit 1
@@ -11,7 +11,7 @@ fi
 key=''
 while :; do
   prefix="s3://${bucket}/${key}"
-  name="$(aws s3 ls "$prefix" | peco --prompt="$prefix" | awk '{print $NF}')"
+  name="$(aws s3 ls "$prefix" | peco --prompt="$prefix" --initial-filter Fuzzy | awk '{print $NF}')"
   if [ -z "$name" ]; then
     echo 'No object' >&2
     exit 1

@@ -99,7 +99,7 @@ if builtin command -v peco > /dev/null ; then
         fi
         BUFFER=$(history -n 1 | \
             eval $tac | \
-            peco --query "$LBUFFER")
+            peco --query "$LBUFFER" --initial-filter Fuzzy)
         CURSOR=$#BUFFER
         zle clear-screen
     }

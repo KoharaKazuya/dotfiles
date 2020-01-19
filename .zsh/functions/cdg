@@ -14,7 +14,7 @@ cdg() {
         | sed -E 's%/[^/]*$%%' \
         | sort \
         | uniq \
-        | peco --query "$*"
+        | peco --query "$*" --initial-filter Fuzzy
     )"
   else
     target="$( \
@@ -24,7 +24,7 @@ cdg() {
         | sed -E 's%/[^/]*$%%' \
         | sort \
         | uniq \
-        | peco --query "$*"
+        | peco --query "$*" --initial-filter Fuzzy
     )"
   fi
   if [ -n "$target" ]; then
