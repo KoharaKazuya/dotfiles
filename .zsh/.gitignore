@@ -1,3 +1,6 @@
 .zcompcache
 .zcompdump
 *.zwc
+*.zwc.old
+.zim/*
+!.zim/zimfw.zsh

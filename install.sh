@@ -10,8 +10,7 @@ if [ ! -d $CONTAINER/dotfiles ]; then
   git clone https://github.com/KoharaKazuya/dotfiles.git
 fi
 
-cd $CONTAINER/dotfiles
-git submodule update --init --recursive
+source $CONTAINER/dotfiles/.zsh/.zim/zimfw.zsh install
 
 for dotfile in $(git ls-files | grep '^\.' | sed -e 's/\/.*//' | uniq)
 do
