@@ -11,13 +11,6 @@ if [ "$(readlink ~/.vimrc)" != "$HOME/projects/dotfiles/.vimrc" ]; then
   success=false
 fi
 
-# git clone が再帰的に実行されているかどうか
-# 一例として ZIM のモジュールを調査
-if ! [ -d ~/.zsh/.zim/modules ]; then
-  echo 'git clone が再帰的に実行されていません' >&2
-  success=false
-fi
-
 # .zshrc が読み込まれているか
 # 一例として success/warning/error コマンドの調査
 if ! (type success && type warning && type error) >/dev/null; then

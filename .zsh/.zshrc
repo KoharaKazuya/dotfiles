@@ -4,19 +4,6 @@ fpath=($ZDOTDIR/completion $fpath)
 ## 環境依存の fpath 設定ファイルを読み込む
 [ ! -d $HOME/.zsh.local/completion ] || fpath+=($HOME/.zsh.local/completion)
 
-# Zim
-if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
-  source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
-fi
-## Zim Customize
-### (プロンプト表示などで使われる) git status の確認時、untracked なファイルも確認するように
-zstyle ':zim:git-info' verbose 'yes'
-### ヒストリファイルのディレクトリを変更する
-HISTFILE="$HOME/.zsh_history"
-### zsh-history-substring-search の機能を ctrl-p, ctrl-n の移動のときにも使うように
-bindkey -M emacs '^P' history-substring-search-up
-bindkey -M emacs '^N' history-substring-search-down
-
 
 # zsh オプション設定
 ## 色変数を使えるように
