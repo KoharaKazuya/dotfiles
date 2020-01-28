@@ -2,7 +2,13 @@
 ## 自作補完設定
 fpath=($ZDOTDIR/completion $fpath)
 ## 環境依存の fpath 設定ファイルを読み込む
-[ ! -d $HOME/.zsh.local/completion ] || fpath+=($HOME/.zsh.local/completion)
+if [ -d "$HOME/.zsh.local/completion" ]; then
+  echo '[DEPRECATED] *.local 系の設定ファイルの読み込みは廃止予定です。$HOME/.config/zsh を使用してください: ~/.zsh.local/completion' >&2
+  fpath+=($HOME/.zsh.local/completion)
+fi
+if [ -d "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/completion" ]; then
+  fpath+=(${XDG_CONFIG_HOME:-$HOME/.config}/zsh/completion)
+fi
 
 
 # Start configuration added by Zim install {{{
@@ -133,7 +139,17 @@ bindkey -M vicmd 'j' history-substring-search-down
 ### (プロンプト表示などで使われる) git status の確認時、untracked なファイルも確認するように
 zstyle ':zim:git-info' verbose 'yes'
 ### ヒストリファイルのディレクトリを変更する
-HISTFILE="$HOME/.zsh_history"
+if [ -f "$HOME/.zsh_history" ]; then
+  echo '[DEPRECATED] zsh history ファイルの位置が変更になりました' >&2
+  if [ -e "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/history" ]; then
+    echo '${XDG_CONFIG_HOME:-$HOME/.config}/zsh/history が既に存在するため、ファイル $HOME/.zsh_history を移動できません' >&2
+  else
+    mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+    mv "$HOME/.zsh_history" "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/history"
+    echo "$HOME/.zsh_history を ${XDG_CONFIG_HOME:-$HOME/.config}/zsh/history に移動しました" >&2
+  fi
+fi
+HISTFILE="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/history"
 
 
 # zsh オプション設定
@@ -304,9 +320,15 @@ alias reload='exec zsh -l'
 
 
 # 環境依存の設定ファイルを読み込む
-[ -f ~/.zshrc.local ] && source ~/.zshrc.local
+if [ -f ~/.zshrc.local ]; then
+  echo '[DEPRECATED] *.local 系の設定ファイルの読み込みは廃止予定です。$HOME/.config/zsh を使用してください: ~/.zshrc.local' >&2
+  source ~/.zshrc.local
+fi
+if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/zshrc" ]; then
+  source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/zshrc"
+fi
 ## PROMPT_COLOR が設定されていなければ警告
-[ -z "$PROMPT_COLOR" ] && notice 'PROMPT_COLOR is not defined.\nRun `echo "export PROMPT_COLOR=..." >> ~/.zshrc.local`'
+[ -z "$PROMPT_COLOR" ] && notice 'PROMPT_COLOR is not defined.\nRun `mkdir -p ~/.config/zsh && echo "export PROMPT_COLOR=..." >> ~/.config/zsh/zshrc`'
 
 # 右プロンプトにホスト名を表示する
 RPROMPT="%{$reset_color%}<%n@%{$fg_bold[$PROMPT_COLOR]%}%m%{$reset_color%}>"
