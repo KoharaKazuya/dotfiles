@@ -1,5 +1,0 @@
-if [ -d "/Applications/Docker.app/Contents/Resources/etc/" ]; then
-  for f in "/Applications/Docker.app/Contents/Resources/etc/"*.zsh-completion; do
-    source "$f"
-  done
-fi
