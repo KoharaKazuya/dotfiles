@@ -314,7 +314,10 @@ ls_abbrev() {
 
 
 # zsh の再読込用関数
-alias reload='exec zsh -l'
+reload() {
+  unset ZDOTDIR # $ZDOTDIR が定義されていると最初に読み込むファイルが $HOME/.zshenv でなくなるため
+  exec zsh -l
+}
 
 
 # 環境依存の設定ファイルを読み込む
