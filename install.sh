@@ -10,7 +10,7 @@ if [ ! -d $CONTAINER/dotfiles ]; then
   git clone https://github.com/KoharaKazuya/dotfiles.git
 fi
 
-source $CONTAINER/dotfiles/.zsh/.zim/zimfw.zsh install
+zsh $CONTAINER/dotfiles/.zsh/.zim/zimfw.zsh install
 
 for dotfile in $(git ls-files | grep '^\.' | sed -e 's/\/.*//' | uniq)
 do
