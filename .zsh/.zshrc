@@ -161,8 +161,6 @@ setopt transient_rprompt
 setopt combining_chars
 ## フック
 autoload -Uz add-zsh-hook
-## パスのディレクトリ単位で ^w が行えるように
-WORDCHARS=${WORDCHARS:s/\//}
 ## Esc, e でコマンドラインをテキストエディタで編集できるように
 autoload -Uz edit-command-line
 zle -N edit-command-line
@@ -332,25 +330,6 @@ fi
 
 # 右プロンプトにホスト名を表示する
 RPROMPT="%{$reset_color%}<%n@%{$fg_bold[$PROMPT_COLOR]%}%m%{$reset_color%}>"
-
-# ターミナルのタイトルを変更する
-case "${TERM}" in
-    kterm*|xterm*)
-    function _change_terminal_title() {
-        # タイトルをカレントディレクトリに
-        if [ ${#PWD} -gt 16 ]; then
-            index=$((${#PWD} - 15))
-            title=...$PWD[$index,${#PWD}]
-        else
-            title=$PWD
-        fi
-        echo -ne "\033]0;$title\007"
-    }
-    add-zsh-hook precmd _change_terminal_title
-    ## 起動時に一度だけ実行
-    _change_terminal_title
-    ;;
-esac
 
 # crontab -r が危険なので必ず確認メッセージを表示するようにする
 crontab() {
