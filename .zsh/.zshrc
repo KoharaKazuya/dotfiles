@@ -220,23 +220,15 @@ for f in "$ZDOTDIR/functions/"*; do
   source "$f"
 done
 
-# peco hitory
-if builtin command -v peco > /dev/null ; then
-    function peco-select-history() {
-        local tac
-        if which tac > /dev/null; then
-            tac="tac"
-        else
-            tac="tail -r"
-        fi
-        BUFFER=$(history -n 1 | \
-            eval $tac | \
-            peco --query "$LBUFFER" --initial-filter Fuzzy)
-        CURSOR=$#BUFFER
-        zle clear-screen
-    }
-    zle -N peco-select-history
-    bindkey '^r' peco-select-history
+# fzf history
+if builtin command -v fzf >/dev/null; then
+  function fzf-select-history() {
+    BUFFER=$(fc -rln 1 | fzf --height=40% --query=$BUFFER --no-multi)
+    CURSOR=$#BUFFER
+    zle reset-prompt
+  }
+  zle -N fzf-select-history
+  bindkey '^r' fzf-select-history
 fi
 
 # 絶対パスを記録する cd

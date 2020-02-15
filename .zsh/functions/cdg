@@ -1,7 +1,7 @@
 # git で変更点があるファイルのあるディレクトリに移動する cd
 cdg() {
-  if ! builtin command -v peco >/dev/null; then
-    printf '[33mThis command depends on [1;3mpeco[0m\n'
+  if ! builtin command -v fzf>/dev/null; then
+    printf '[33mThis command depends on [1;3mfzf[0m\n'
     return 1
   fi
 
@@ -14,7 +14,7 @@ cdg() {
         | sed -E 's%/[^/]*$%%' \
         | sort \
         | uniq \
-        | peco --query "$*" --initial-filter Fuzzy
+        | fzf --height=40% --query="$*" --no-multi
     )"
   else
     target="$( \
@@ -24,7 +24,7 @@ cdg() {
         | sed -E 's%/[^/]*$%%' \
         | sort \
         | uniq \
-        | peco --query "$*" --initial-filter Fuzzy
+        | fzf --height=40% --query="$*" --no-multi
     )"
   fi
   if [ -n "$target" ]; then

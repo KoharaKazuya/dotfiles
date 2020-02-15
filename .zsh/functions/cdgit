@@ -1,10 +1,10 @@
 cdgit() {
-  if ! builtin command -v peco >/dev/null; then
-    printf '[33mThis command depends on [1;3mpeco[0m\n'
+  if ! builtin command -v fzf >/dev/null; then
+    printf '[33mThis command depends on [1;3mfzf[0m\n'
     return 1
   fi
 
-  local target="$(cd "$HOME/git" && echo */*/* | xargs -n1 | peco --query "$*" --initial-filter Fuzzy)"
+  local target="$(cd "$HOME/git" && echo */*/* | xargs -n1 | fzf --height=40% --query="$*" --no-multi)"
   if [ -n "$target" ]; then
     cd "$HOME/git/$target"
   fi
