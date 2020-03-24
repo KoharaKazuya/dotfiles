@@ -4,8 +4,7 @@
 # (以前の設定で ~/projects/git-hooks に向けてシンボリックリンクを
 # 設定していたことがあり、その環境のままのリポジトリでは、
 # このスクリプトを再起的に呼び出す可能性があるため検知して停止する)
-# ----- GIT_HOOKS_LOOP_DETECT START ----- #
-if [ -z "$GIT_HOOKS_LOOP_DETECT" ]; then
+[ -n "$GIT_HOOKS_LOOP_DETECT" ] && exit 0
 
 # GIT_HOOKS_DEBUG 変数が定義されていればデバッグ出力
 if [ -n "$GIT_HOOKS_DEBUG" ]; then
@@ -63,9 +62,6 @@ done
 
 # 同名のスクリプトがリポジトリ自体に存在するなら、そのファイルを読み込む
 # (このファイルは core.hooksPath の設定によりグローバルに呼ばれる想定)
-if [ -e "$LOCAL_HOOK" ]; then
-  GIT_HOOKS_LOOP_DETECT=1 source "$LOCAL_HOOK"
+if [ -x "$LOCAL_HOOK" ]; then
+  GIT_HOOKS_LOOP_DETECT=1 "$LOCAL_HOOK" "$@"
 fi
-
-fi
-# ----- GIT_HOOKS_LOOP_DETECT END ----- #
