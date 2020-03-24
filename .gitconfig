@@ -8,8 +8,7 @@
     precomposeunicode = true
     ignorecase = false
     attributesfile = ~/.gitattributes
-[init]
-    templatedir = ~/.config/git/template
+    hooksPath = ~/projects/dotfiles/git-hooks
 [status]
     showUntrackedFiles = all
 [log]

@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# 再起的に呼び出されてループすることを防ぐ
+# (以前の設定で ~/projects/git-hooks に向けてシンボリックリンクを
+# 設定していたことがあり、その環境のままのリポジトリでは、
+# このスクリプトを再起的に呼び出す可能性があるため検知して停止する)
+# ----- GIT_HOOKS_LOOP_DETECT START ----- #
+if [ -z "$GIT_HOOKS_LOOP_DETECT" ]; then
+
 # GIT_HOOKS_DEBUG 変数が定義されていればデバッグ出力
 if [ -n "$GIT_HOOKS_DEBUG" ]; then
   set -x
@@ -9,6 +16,12 @@ set -eu
 
 # このスクリプトは git hooks スクリプトからシンボリックリンクで参照され、
 # シンボリックリンクのファイル名によって、xxx.d をロードする
+
+# 各種変数
+# @see https://qiita.com/ik-fib/items/55edad2e5f5f06b3ddd1
+GIT_ROOT=$(git rev-parse --show-superproject-working-tree --show-toplevel | head -1)
+HOOK_NAME=$(basename "$0")
+LOCAL_HOOK="$GIT_ROOT/.git/hooks/$HOOK_NAME"
 
 # 基本関数を定義する
 #
@@ -37,7 +50,7 @@ show_ignore_variable() {
 }
 
 # ファイル名と同名のディレクトリ (ローカル版も含め) 中身を全て読み込む
-for f in "$0.d"/*.sh "$HOME/.config/git/hooks/$(basename "$0").d"/*.sh; do
+for f in "$0.d"/*.sh "$HOME/.config/git/hooks/$HOOK_NAME.d"/*.sh; do
   varname="$(basename "$f" | sed -E 's/^/GIT_HOOKS_IGNORE_&/;s/\.sh//;s/-/_/g' | tr '[a-z]' '[A-Z]')"
   # glob にマッチしなかった場合はスキップ
   if [ "$varname" = 'GIT_HOOKS_IGNORE_*' ]; then continue; fi
@@ -47,3 +60,12 @@ for f in "$0.d"/*.sh "$HOME/.config/git/hooks/$(basename "$0").d"/*.sh; do
   if ! test -f "$f"; then continue; fi
   source "$f"
 done
+
+# 同名のスクリプトがリポジトリ自体に存在するなら、そのファイルを読み込む
+# (このファイルは core.hooksPath の設定によりグローバルに呼ばれる想定)
+if [ -e "$LOCAL_HOOK" ]; then
+  GIT_HOOKS_LOOP_DETECT=1 source "$LOCAL_HOOK"
+fi
+
+fi
+# ----- GIT_HOOKS_LOOP_DETECT END ----- #
