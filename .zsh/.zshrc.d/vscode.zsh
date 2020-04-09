@@ -14,8 +14,14 @@ if builtin command -v code >/dev/null 2>&1; then
         code "$f"
         return 0
       done
+      # 探索ディレクトリを上に上がる
+      curr="${curr%/*}"
+    done
+    # カレントディレクトリから上のパスに向かって検索していく
+    local curr="$PWD"
+    while [ "$curr" != "" ]; do
       # VSCode ディレクトリ個別設定が見つかればそのディレクトリを開く
-      if [ -d "$curr/.vscode" ]; then
+      if [ -d "$curr/.vscode" ] && [ "$curr" != "$HOME" ]; then
         code "$curr"
         return 0
       fi
