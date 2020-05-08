@@ -29,6 +29,9 @@ if has('mouse')
   set mouse=a   " マウスモード有効
 endif
 
+" ビープ音を消す
+set belloff=all
+
 " インデント設定
 set tabstop=2
 set shiftwidth=2
