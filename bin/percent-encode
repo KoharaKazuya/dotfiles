@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+
+let isSafe = () => true;
+for (const arg of process.argv.slice(2)) {
+  // encodeURI
+  if (arg === "--encodeURI" || arg === "--encode-uri") {
+    isSafe = (c) =>
+      new RegExp(`^[A-Za-z0-9;,/?:@&=+$_.!~*'()#-]$`).test(
+        String.fromCharCode(c)
+      );
+  }
+  // encodeURIComponent
+  else if (arg === "--encodeURIComponent" || arg === "--encode-uri-component") {
+    isSafe = (c) =>
+      new RegExp(`^[A-Za-z0-9_.!~*'()-]$`).test(String.fromCharCode(c));
+  }
+  // alphanumeric
+  else if (arg === "--alphanumeric") {
+    isSafe = (c) =>
+      (47 < c && c < 58) || (64 < c && c < 91) || (96 < c && c < 123);
+  }
+  // all
+  else if (arg === "--all") {
+    isSafe = () => false;
+  }
+  // manual
+  else {
+    isSafe = (c) => new RegExp(`^[${arg}]$`).test(String.fromCharCode(c));
+  }
+}
+
+(async () => {
+  const buffers = [];
+  for await (const chunk of process.stdin) buffers.push(chunk);
+  const buffer = Buffer.concat(buffers);
+
+  for (const c of buffer) {
+    if (isSafe(c)) {
+      process.stdout.write(Buffer.from([c]));
+    } else {
+      const escaped = "%" + c.toString(16).toUpperCase();
+      process.stdout.write(escaped);
+    }
+  }
+})();
