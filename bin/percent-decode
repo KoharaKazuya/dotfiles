@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+
+(async () => {
+  const buffers = [];
+  for await (const chunk of process.stdin) buffers.push(chunk);
+  const buffer = Buffer.concat(buffers);
+
+  let constructing;
+  for (const c of buffer) {
+    if (constructing) {
+      if ((47 < c && c < 58) || (64 < c && c < 71)) {
+        // c is '[0-9A-F]'
+        constructing.push(c);
+
+        if (constructing.length === 2) {
+          // constructed
+          const hex = Buffer.from(constructing).toString();
+          const bin = parseInt(hex, 16);
+          process.stdout.write(Buffer.from([bin]));
+          constructing = undefined;
+        }
+      } else {
+        throw new Error("URIError: malformed URI sequence");
+      }
+    } else if (c === 37) {
+      // c is '%'
+      constructing = [];
+    } else {
+      process.stdout.write(Buffer.from([c]));
+    }
+  }
+
+  if (constructing) throw new Error("URIError: malformed URI sequence");
+})();
