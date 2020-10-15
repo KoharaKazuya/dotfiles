@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -eu
+
+current=$(git current-branch)
+
+latest_time=""
+latest_branch=""
+# 全部リモートブランチのうち、
+for branch in $(git show-ref | grep refs/remotes/ | cut -d/ -f3-); do
+  if [ ${branch#*/} = $current ]; then continue; fi
+  # 共通祖先コミット
+  base=$(git merge-base $current $branch)
+  # 共通祖先コミットの Author Date
+  d=$(git show --no-patch --pretty='format:%at' $base)
+  # 最新のコミットを探す
+  if [ -z "$latest_time" ] || [ $d -gt $latest_time ]; then
+    latest_time=$d
+    latest_branch=$branch
+  fi
+done
+
+if [ -n "$latest_branch" ]; then
+  gh pr create --web --base ${latest_branch#*/}
+else
+  gh pr create --web
+fi

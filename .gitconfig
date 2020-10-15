@@ -49,7 +49,7 @@
     mc = merged-clean --all
     ms = merge --squash
     pl = pull --ff-only --prune
-    pr = browse-remote
+    pr = create-pull-request
     ps = push origin
     rf = flow release finish
     rs = flow release start
