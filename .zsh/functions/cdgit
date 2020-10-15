@@ -4,7 +4,7 @@ cdgit() {
     return 1
   fi
 
-  local target="$(cd "$HOME/git" && echo */*/* | xargs -n1 | fzf --height=40% --query="$*" --no-multi)"
+  local target=$(cd "$HOME/git" && echo */*/* | xargs -n1 | fzf --query="$*" --no-multi --preview="mdcat --ansi-only '$HOME/git/{}/README.md'")
   if [ -n "$target" ]; then
     cd "$HOME/git/$target"
   fi
