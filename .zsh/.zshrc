@@ -270,7 +270,7 @@ cat_readme() {
       else
         cat "$f" | awk '{print}' | head -n 10
       fi
-      printf '[0;2;4m%s[0m\n\n' "${(r:COLUMNS:: :)}"
+      print_separator
     fi
   done)
 }

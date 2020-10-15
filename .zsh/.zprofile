@@ -26,6 +26,11 @@ error() {
     return 1
 }
 
+# 画面幅に合わせて境界線を出力する
+print_separator() {
+    printf '\e[0;2m%s\e[0m\n' "${(r:COLUMNS::─:)}"
+}
+
 
 # 環境依存の設定ファイルを読み込む
 [ -f ~/.zprofile.local ] && source ~/.zprofile.local
