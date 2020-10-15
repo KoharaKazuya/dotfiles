@@ -1,5 +1,5 @@
 # 一時的なシェル環境を示すプロンプト
 setenv() {
   PROMPT="%F{yellow}($*)%f $PROMPT"
-  set-terminal-background-color 0 0 30
+  printf '\e]1337;SetColors=bg=002\a'
 }
