@@ -1,17 +1,150 @@
-#!/bin/sh
+#!/usr/bin/env node
 
-set -eu
+const fs = require("fs").promises;
 
-if [ $# = 0 ]; then
-  target_file="index.html"
-elif [ $# = 1 ]; then
-  target_file="$1"
-else
-  exit 1
-fi
+const helpMessage = `NAME:
+  mkhtml -- generate my HTML skelton
 
-if [ "$target_file" != "-" ]; then
-  exec >"$target_file"
-fi
+SYNOPSIS:
+  mkhtml [-h|--help]
+  mkhtml [-l|--lang <language>] [-t|--title <title>] [--normalize-css]
+         [-f|--font] [--first-responder] [--noscript] [-|<new.html>]
 
-cat "$(dirname "$0")/mkhtml.template.html"
+DESCRIPTION:
+  generate my HTML skelton
+
+  -h  --help              Print this help.
+  -l  --lang              Set language.
+  -t  --title             Set title.
+      --normalize-css     Add normalize css.
+  -f  --font              Add fonts.
+      --first-responder   Add First Responder.
+      --noscript          Add noscript.
+
+EXAMPLE:
+  mkhtml --title Example example.html
+`;
+
+const options = {
+  targetFile: "index.html",
+  lang: undefined,
+  title: undefined,
+  normalizeCss: false,
+  font: false,
+  firstResponder: false,
+  noscript: false,
+};
+const args = process.argv.slice(2);
+for (let i = 0; i < args.length; i++) {
+  const arg = args[i];
+  if (arg === "-h" || arg === "--help") {
+    process.stderr.write(helpMessage);
+    process.exit(0);
+  } else if (arg === "-l" || arg === "--lang") {
+    options.lang = args[++i];
+  } else if (arg === "-t" || arg === "--title") {
+    options.title = args[++i];
+  } else if (arg === "--normalize-css") {
+    options.normalizeCss = true;
+  } else if (arg === "-f" || arg === "--font") {
+    options.font = true;
+  } else if (arg === "--first-responder") {
+    options.firstResponder = true;
+  } else if (arg === "--noscript") {
+    options.noscript = true;
+  } else if (arg === "-") {
+    options.targetFile = undefined;
+  } else if (arg.startsWith("-")) {
+    throw new Error("unknown option: " + arg);
+  } else {
+    options.targetFile = arg;
+  }
+}
+
+const output = `<!DOCTYPE html>
+<html${options.lang ? ` lang="${options.lang}"` : ""}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />${
+      options.title
+        ? `
+    <title>${options.title}</title>`
+        : ""
+    }${
+  options.normalizeCss
+    ? `
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/sanitize.css@11.0.0/sanitize.css"
+      integrity="sha384-KcbkICW9AiIQ2NkoMVCyn4KAWRa9tE2anP60+J1I+hntFtttZH/7QNUMkaua6NN9"
+      crossorigin="anonymous"
+    />`
+    : ""
+}${
+  options.font
+    ? `
+    <style>
+      html {
+        font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic UI",
+          sans-serif;
+      }
+    </style>`
+    : ""
+}${
+  options.firstResponder
+    ? `
+    <style>
+      .first-responder {
+        display: block;
+        width: 48px;
+        height: 48px;
+        border-radius: 100%;
+        border: 2px solid gray;
+        border-bottom-color: transparent;
+        animation: rotate 1s linear 0s infinite;
+        margin: 48px auto;
+      }
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        50% {
+          transform: rotate(180deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>`
+    : ""
+}
+  </head>
+  <body>${
+    options.noscript
+      ? `
+    <noscript
+      ><p>
+        このページは JavaScript を使用しています。ご使用中のブラウザは
+        JavaScript が無効になっているか、JavaScript
+        に対応していません。JavaScript を有効にするか、JavaScript
+        が使用可能なブラウザでアクセスして下さい。
+      </p></noscript
+    >`
+      : ""
+  }${
+  options.firstResponder
+    ? `
+    <div class="first-responder"></div>`
+    : ""
+}
+  </body>
+</html>
+`;
+
+if (options.targetFile) {
+  (async () => {
+    await fs.writeFile(options.targetFile, output);
+  })();
+} else {
+  process.stdout.write(output);
+}
