@@ -21,8 +21,9 @@ highlight IdeographicSpace term=reverse ctermbg=238 guibg=DarkGrey
 match IdeographicSpace /　/
 
 " 検索設定
-set incsearch   " インクリメンタルサーチを行う
-set hlsearch    " 検索結果をハイライト
+set incsearch           " インクリメンタルサーチを行う
+set hlsearch            " 検索結果をハイライト
+set shortmess-=S        " 検索結果のヒット数を表示する
 
 " 入力設定
 if has('mouse')
