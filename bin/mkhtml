@@ -7,8 +7,9 @@ const helpMessage = `NAME:
 
 SYNOPSIS:
   mkhtml [-h|--help]
-  mkhtml [-l|--lang <language>] [-t|--title <title>] [--normalize-css]
-         [-f|--font] [--first-responder] [--noscript] [-|<new.html>]
+  mkhtml [-l|--lang <language>] [-t|--title <title>] [--favicon]
+         [--normalize-css] [-f|--font] [--first-responder] [--noscript]
+         [-|<new.html>]
 
 DESCRIPTION:
   generate my HTML skelton
@@ -16,6 +17,7 @@ DESCRIPTION:
   -h  --help              Print this help.
   -l  --lang              Set language.
   -t  --title             Set title.
+      --favicon           Add favicon.
       --normalize-css     Add normalize css.
   -f  --font              Add fonts.
       --first-responder   Add First Responder.
@@ -29,6 +31,7 @@ const options = {
   targetFile: "index.html",
   lang: undefined,
   title: undefined,
+  favicon: false,
   normalizeCss: false,
   font: false,
   firstResponder: false,
@@ -44,6 +47,8 @@ for (let i = 0; i < args.length; i++) {
     options.lang = args[++i];
   } else if (arg === "-t" || arg === "--title") {
     options.title = args[++i];
+  } else if (arg === "--favicon") {
+    options.favicon = true;
   } else if (arg === "--normalize-css") {
     options.normalizeCss = true;
   } else if (arg === "-f" || arg === "--font") {
@@ -71,6 +76,12 @@ const output = `<!DOCTYPE html>
     <title>${options.title}</title>`
         : ""
     }${
+  options.favicon
+    ? `
+    <!-- @see https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs -->
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />`
+    : ""
+}${
   options.normalizeCss
     ? `
     <link
