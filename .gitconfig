@@ -9,6 +9,8 @@
     ignorecase = false
     attributesfile = ~/.gitattributes
     hooksPath = ~/projects/dotfiles/git-hooks
+[init]
+    defaultBranch = main
 [status]
     showUntrackedFiles = all
 [log]
