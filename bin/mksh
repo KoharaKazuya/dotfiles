@@ -1,132 +1,64 @@
-#!/bin/sh
+#!/usr/bin/env node
 
-# 実行ファイル（シェルスクリプト）作成コマンド
-# (http://qiita.com/blackenedgold/items/c9e60e089974392878c8)
+const fs = require("fs").promises;
 
-set -eu
-
-usage() {
-    cat <<HELP
-NAME:
-  $(basename $0) -- Generate an executable shell script
+const helpMessage = `NAME:
+  mksh -- Generate an executable shell script
 
 SYNOPSIS:
-  $(basename $0) [-h|--help]
-  $(basename $0) [--verbose] [--bash] [-m|--min]
+  mksh [-h|--help]
+  mksh [--bash] [--reset-cd]
 
 DESCRIPTION:
-  Generate an executable shell script from template.
-  Generated script has executable permission and usable template for a command.
+  Generate an executable shell script.
 
   -h  --help      Print this help.
-      --verbose   Enables verbose mode.
       --bash      Generate bash script (with \`pipefail\` option).
-  -m  --min       Generate minimal script.
+      --reset-cd  Add command to reset current directory.
 
 EXAMPLE:
-  $(basename $0) new_command.sh
+  mksh new_command.sh
+`;
 
-HELP
+const options = {
+  targetFile: "main.sh",
+  bash: false,
+  resetCd: false,
+};
+const args = process.argv.slice(2);
+for (let i = 0; i < args.length; i++) {
+  const arg = args[i];
+  if (arg === "-h" || arg === "--help") {
+    process.stderr.write(helpMessage);
+    process.exit(0);
+  } else if (arg === "--bash") {
+    options.bash = true;
+  } else if (arg === "--reset-cd") {
+    options.resetCd = true;
+  } else if (arg === "-") {
+    options.targetFile = undefined;
+  } else if (arg.startsWith("-")) {
+    throw new Error("unknown option: " + arg);
+  } else {
+    options.targetFile = arg;
+  }
 }
 
-script_dir="$(cd $(dirname "$0"); pwd)"
+const output = `#!/bin/${options.bash ? "bash" : "sh"}
 
-bash=false
-min=false
-while [ $# -gt 0 ]; do
-    case "$1" in
-             --bash    ) bash=true;;
-        -m | --min     ) min=true;;
-        -h | --help    ) usage; exit 0;;
-             --verbose ) set -x;;
-        --             ) shift; break;;
-        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
-        *              ) break;;
-    esac
-    shift
-done
+set -eu${options.bash ? " -o pipefail" : ""}${
+  options.resetCd
+    ? `
 
-if [ $# != 1 ]; then
-    usage
-    exit 1
-fi
-
-if $bash; then
-    cat <<'SHELLSCRIPT' > "$1"
-#!/bin/bash
-
-set -eu -o pipefail
-
-SHELLSCRIPT
-else
-    cat <<'SHELLSCRIPT' > "$1"
-#!/bin/sh
-
-set -eu
-
-SHELLSCRIPT
-fi
-
-if ! $min; then
-    cat <<'SHELLSCRIPT' >> "$1"
-usage() {
-    cat <<HELP
-NAME:
-  $(basename $0) -- {one sentence description}
-
-SYNOPSIS:
-  $(basename $0) [-h|--help]
-  $(basename $0) [--verbose]
-
-DESCRIPTION:
-  {description here}
-
-  -h  --help      Print this help.
-      --verbose   Enables verbose mode.
-
-EXAMPLE:
-  {examples if any}
-
-HELP
+cd "$(dirname "$0")"`
+    : ""
 }
+`;
 
-# 割り込みや正常終了時に実行する処理
-graceful_exit() {
-  :
+if (options.targetFile) {
+  (async () => {
+    await fs.writeFile(options.targetFile, output, { mode: 0o755 });
+  })();
+} else {
+  process.stdout.write(output);
 }
-trap graceful_exit 0
-
-opt_arg=""
-parse_opt_arg() {
-    # 引数が必要なオプションに引数がなければエラー終了させる
-    if [ $# -lt 2 ] || !(case "$2" in -*) false;; esac); then
-        printf "Option requires an argument: $1\n" >&2
-        exit 1
-    fi
-
-    opt_arg="$2"
-}
-
-
-script_dir="$(cd $(dirname "$0"); pwd)"
-
-while [ $# -gt 0 ]; do
-    case "$1" in
-        -t | --test    ) parse_opt_arg "$@"
-                         printf "test: $opt_arg\n"
-                         shift;;
-        -h | --help    ) usage; exit 0;;
-             --verbose ) set -x;;
-        --             ) shift; break;;
-        -*             ) printf "Illegal option: $1\n" >&2; exit 1;;
-        *              ) break;;
-    esac
-    shift
-done
-
-# do something
-printf "$*\n"
-SHELLSCRIPT
-fi
-
-chmod +x "$1"
