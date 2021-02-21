@@ -9,7 +9,7 @@ if cat "$1" | head -n1 | grep -E '^v[0-9]+(.[0-9]+)*' >/dev/null 2>&1; then
 fi
 
 # 共通コミットメッセージフォーマットチェック
-format_regexp='^(build|ci|docs|feat|fix|perf|refactor|style|test)(\(.*\))?: .*$'
+format_regexp='^(build|ci|docs|feat|fix|perf|refactor|style|test)(\(.*\))?!?: .*$'
 if cat "$1" | head -n1 | grep -vE "$format_regexp" >/dev/null 2>&1; then
   exec >&2
   yellow="$(tput setaf 3)"
@@ -18,8 +18,8 @@ if cat "$1" | head -n1 | grep -vE "$format_regexp" >/dev/null 2>&1; then
   echo ''
   echo "$yellow$rev WARN $reset$yellow コミットメッセージのフォーマットが不正です$reset"
   echo ''
-  echo '  Angular Commit Message Guidelines に従ってコミットメッセージを作成してください'
-  echo '  https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit'
+  echo '  Conventional Commits に従ってコミットメッセージを作成してください'
+  echo '  https://www.conventionalcommits.org/ja/v1.0.0/'
   echo ''
   show_ignore_variable
   echo ''
