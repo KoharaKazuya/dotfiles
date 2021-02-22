@@ -2,7 +2,6 @@
 
 set -eu
 
-script_dir="$(cd $(dirname "$0"); pwd)"
 type="smart"
 
 while [ $# -gt 0 ]; do
@@ -18,9 +17,28 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+if [ $# != 2 ]; then
+  printf "Illegal number of argument: %d\n" "$#" >&2
+  exit 1
+fi
+
+f1="$1"
+f2="$2"
+
+if ! [ -f "$f1" ]; then
+  t1="$(mktemp)"
+  cp "$f1" "$t1"
+  f1="$t1"
+fi
+if ! [ -f "$f2" ]; then
+  t2="$(mktemp)"
+  cp "$f2" "$t2"
+  f2="$t2"
+fi
+
 case "$type" in
-    git       ) git diff --no-index --word-diff=color -- "$@";;
-    character ) git diff --no-index --color-words=$'[^\x80-\xbf][\x80-\xbf]*' -- "$@";;
-    smart     ) git diff --no-index --color-words=$'[a-zA-Z0-9]+|[^\x80-\xbf][\x80-\xbf]*' -- "$@";;
+    git       ) git diff --no-index --word-diff=color -- "$f1" "$f2";;
+    character ) git diff --no-index --color-words=$'[^\x80-\xbf][\x80-\xbf]*' -- "$f1" "$f2";;
+    smart     ) git diff --no-index --color-words=$'[a-zA-Z0-9]+|[^\x80-\xbf][\x80-\xbf]*' -- "$f1" "$f2";;
     *         ) break;;
 esac
