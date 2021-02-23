@@ -2,7 +2,23 @@
 
 set -eu
 
-t="$(mktemp)"
-pbpaste > "$t"
-vim '+set nofixeol noeol syntax=markdown filetype=markdown' "$t"
-cat "$t" | pbcopy
+script=$(cat <<EOS
+t="\$(mktemp)"
+pbpaste > "\$t"
+vim "+set nofixeol noeol syntax=markdown filetype=markdown" "\$t"
+cat "\$t" | pbcopy
+rm "\$t"
+EOS
+)
+
+if [ -t 0 ]; then
+  eval "$script"
+else
+  osascript -l JavaScript <<EOS
+    (() => {
+      const term = Application("iTerm");
+      const command = \`/bin/sh -euc '$script'\`;
+      term.createWindowWithDefaultProfile({ command });
+    })();
+EOS
+fi
