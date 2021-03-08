@@ -31,13 +31,13 @@ changed_files_by_commit() {
   case "$0" in
     *pre-commit  ) git diff --cached --name-only;;
     *post-commit ) git diff --name-only HEAD~;;
-    *            ) exit 1;;
+    *            ) return 1;;
   esac
 }
 added_text_by_commit() {
   case "$0" in
     *pre-commit  ) git diff --cached -U0 | sed -n '/^\+\+\+/d;/^\+/s/^\+//p';;
-    *            ) exit 1;;
+    *            ) return 1;;
   esac
 }
 changed_files_by_merge() {
@@ -46,6 +46,19 @@ changed_files_by_merge() {
 show_ignore_variable() {
   varname="$(basename "$f" | sed -E 's/^/GIT_HOOKS_IGNORE_&/;s/\.sh//;s/-/_/g' | tr '[a-z]' '[A-Z]')"
   printf 'このチェックを無効化するには以下のように環境変数を設定してください\n\n  $ %s=1 git commit ...\n\n' "$varname"
+}
+
+# ログ出力関数を定義する
+info() {
+  local rev="$(    tput rev     2>/dev/null || : )"
+  local reset="$(  tput sgr0    2>/dev/null || : )"
+  printf "\n$rev INFO $reset %s\n\n" "$*" >&2
+}
+warn() {
+  local yellow="$( tput setaf 3 2>/dev/null || : )"
+  local rev="$(    tput rev     2>/dev/null || : )"
+  local reset="$(  tput sgr0    2>/dev/null || : )"
+  printf "\n$yellow$rev WARN $reset$yellow %s$reset\n\n" "$*" >&2
 }
 
 # ファイル名と同名のディレクトリ (ローカル版も含め) 中身を全て読み込む
