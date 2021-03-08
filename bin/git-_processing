@@ -21,5 +21,5 @@ shift
     printf '\e[1;31m✗\e[0m\n'
   fi
 } \
-| sed -E 's/^/[2m   | [0m/' \
+| sed -E 's/^/[2m   │ [0m/' \
 | awk '$0!~/✗/;/✗/{print;s=1};END{exit s}'
