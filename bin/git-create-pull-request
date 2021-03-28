@@ -4,10 +4,21 @@ set -eu
 
 current=$(git current-branch)
 
+head=""
+origin_url=$(git remote get-url --push origin 2>/dev/null || :)
+upstream_url=$(git remote get-url upstream 2>/dev/null || :)
+if [ -n "$origin_url" ] && [ -n "$upstream_url" ]; then
+  git push origin
+  if [ "${origin_url%/*/*}" = "${upstream_url%/*/*}" ] && [ "${origin_url##*/}" = "${upstream_url##*/}" ]; then
+    origin_owner="${origin_url%/*}"
+    head="${origin_owner##*/}:$current"
+  fi
+fi
+
 latest_time=""
 latest_branch=""
-# 全部リモートブランチのうち、
-for branch in $(git show-ref | grep refs/remotes/ | cut -d/ -f3-); do
+# 全リモートブランチのうち、
+for branch in $(git show-ref | grep refs/remotes/upstream | cut -d/ -f3-); do
   if [ ${branch#*/} = $current ]; then continue; fi
   # 共通祖先コミット
   base=$(git merge-base $current $branch)
@@ -20,8 +31,8 @@ for branch in $(git show-ref | grep refs/remotes/ | cut -d/ -f3-); do
   fi
 done
 
-if [ -n "$latest_branch" ]; then
-  gh pr create --web --base ${latest_branch#*/}
-else
-  gh pr create --web
-fi
+options=""
+if [ -n "$head" ]; then options="$options --head $head"; fi
+if [ -n "$latest_branch" ]; then options="$options --base ${latest_branch#*/}"; fi
+
+gh pr create --web $options
