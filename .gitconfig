@@ -92,7 +92,7 @@
     allowed = AKIAIOSFODNN7EXAMPLE
     allowed = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 [private]
-    default-branch = master
+    default-branch = main
 
 [include]
     path = ~/.config/git/config
