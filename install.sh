@@ -7,7 +7,7 @@ CONTAINER=~/projects
 mkdir -p $CONTAINER
 if [ ! -d $CONTAINER/dotfiles ]; then
   cd $CONTAINER
-  git clone https://github.com/KoharaKazuya/dotfiles.git
+  git clone --recursive https://github.com/KoharaKazuya/dotfiles.git
 fi
 cd $CONTAINER/dotfiles
 
