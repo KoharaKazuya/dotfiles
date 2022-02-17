@@ -1,3 +1,8 @@
+path=(
+  "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"(N-/)
+  $path
+)
+
 if builtin command -v code >/dev/null 2>&1; then
   # カレントディレクトリを含む VSCode のワークスペースなどを開く
   code-open-project() {
@@ -36,4 +41,6 @@ if builtin command -v code >/dev/null 2>&1; then
     # ルートパスまで探索して見つからなければ、カレントディレクトリを開く
     code "$PWD"
   }
+
+  alias c=code-open-project
 fi
