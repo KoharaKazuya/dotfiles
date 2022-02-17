@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+const readline = require("readline");
+
+async function main() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+  });
+
+  for await (const line of rl) {
+    process.stdout.write(`${decodeURIComponent(line)}\n`);
+  }
+}
+main().catch(console.error);
