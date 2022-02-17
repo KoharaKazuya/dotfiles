@@ -136,8 +136,6 @@ bindkey -M vicmd 'j' history-substring-search-down
 # }}} End configuration added by Zim install
 
 ## Zim Customize
-### (プロンプト表示などで使われる) git status の確認時、untracked なファイルも確認するように
-zstyle ':zim:git-info' verbose 'yes'
 ### ヒストリファイルのディレクトリを変更する
 if [ -f "$HOME/.zsh_history" ]; then
   echo '[DEPRECATED] zsh history ファイルの位置が変更になりました' >&2
