@@ -1,0 +1,3 @@
+#compdef volta
+
+source <(volta completions zsh)
