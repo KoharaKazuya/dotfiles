@@ -1,17 +1,31 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env node
 
-checker = /\p{M}/
+const readline = require("readline");
 
-i = 1
-detected = false
-while line = STDIN.gets
-  if matches = checker.match(line)
-    detected = true
+// Unicode における General Category: Mark の文字を検知する
+const checker = /\p{Mark}/gu;
 
-    codepoints = matches.to_a.map { |m| "U+#{ m.unpack("U")[0].to_s(16).upcase }" }
-    STDERR.puts "Found L:#{ i } #{ codepoints.join(",") }\t#{ line }"
-  end
-  i += 1
-end
+async function main() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+  });
 
-exit 1 if detected
+  let detected = false;
+  let i = 1;
+  for await (const line of rl) {
+    const matches = line.match(checker);
+    if (matches) {
+      detected = true;
+
+      const codePoints = matches.map(
+        (m) => `U+${m.codePointAt(0).toString(16).toUpperCase()}`
+      );
+      process.stderr.write(`Found L:${i} ${codePoints.join(",")}\t${line}\n`);
+    }
+
+    i++;
+  }
+
+  if (detected) process.exit(1);
+}
+main().catch(console.error);
