@@ -2,8 +2,12 @@
 
 const readline = require("readline");
 
-// Unicode における General Category: Mark の文字を検知する
-const checker = /\p{Mark}/gu;
+// Unicode における General Category
+// @see https://www.unicode.org/reports/tr44/#General_Category_Values
+// が特殊なもの (= ソースコード中に含まれていればおそらく想定外の混入だと考えられるもの)
+// を検知する
+const checker =
+  /(?:\p{Mark}|\p{Line_Separator}|\p{Paragraph_Separator}|\p{Other})(?<![\u{09}-\u{7e}])/gu;
 
 async function main() {
   const rl = readline.createInterface({
