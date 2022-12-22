@@ -70,7 +70,7 @@ for f in "$0.d"/*.sh "$HOME/.config/git/hooks/$HOOK_NAME.d"/*.sh; do
   if eval echo '${'$varname':-}' | grep . >/dev/null 2>&1; then continue; fi
   # ファイルでなければスキップ
   if ! test -f "$f"; then continue; fi
-  source "$f"
+  . "$f"
 done
 
 # 同名のスクリプトがリポジトリ自体に存在するなら、そのファイルを読み込む
