@@ -8,11 +8,13 @@ if [ "${REMOTE_CONTAINERS:-}" = true ] || [ "${CODESPACES:-}" = true ]; then
     # 日本語化
     sudo sed -i -E 's/# (ja_JP.UTF-8)/\1/' /etc/locale.gen && sudo locale-gen && sudo update-locale LANG=ja_JP.UTF-8 # 日本語化
     # よく使うコマンドをインストールする
-    curl -sSLf -o /tmp/git-delta-musl_0.15.1_amd64.deb https://github.com/dandavison/delta/releases/download/0.15.1/git-delta-musl_0.15.1_amd64.deb
     sudo apt-get update && sudo apt-get install -y \
       tig \
-      ripgrep \
-      /tmp/git-delta-musl_0.15.1_amd64.deb
+      ripgrep
+    if [ "$(uname -m)" = "amd64" ]; then
+      curl -sSLf -o /tmp/git-delta-musl_0.15.1_amd64.deb https://github.com/dandavison/delta/releases/download/0.15.1/git-delta-musl_0.15.1_amd64.deb
+      sudo apt-get install -y /tmp/git-delta-musl_0.15.1_amd64.deb
+    fi
   fi
 fi
 
