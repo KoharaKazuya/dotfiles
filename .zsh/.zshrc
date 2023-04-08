@@ -341,6 +341,8 @@ crontab() {
 ## rm がゴミ箱行きではなければ、警告を出す
 if builtin command -v rm-osx-trash > /dev/null; then
   alias rm=rm-osx-trash
+elif builtin command -v rm-windows-trash > /dev/null; then
+  alias rm=rm-windows-trash
 else
   warning "rm is dangerous."
   if [ "$(uname)" = 'Darwin' ]; then
