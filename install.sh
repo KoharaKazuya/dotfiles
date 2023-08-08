@@ -9,6 +9,7 @@ if [ "${REMOTE_CONTAINERS:-}" = true ] || [ "${CODESPACES:-}" = true ]; then
     sudo sed -i -E 's/# (ja_JP.UTF-8)/\1/' /etc/locale.gen && sudo locale-gen && sudo update-locale LANG=ja_JP.UTF-8 # 日本語化
     # よく使うコマンドをインストールする
     sudo apt-get update && sudo apt-get install -y \
+      vim \
       tig \
       ripgrep
     if [ "$(uname -m)" = "amd64" ]; then
