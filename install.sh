@@ -39,8 +39,6 @@ do
   fi
 done
 
-zsh $CONTAINER/dotfiles/.zsh/.zim/zimfw.zsh install
-
 if type /bin/zsh > /dev/null 2>&1; then
   if [ "$SHELL" = /bin/zsh ]; then
     exec zsh -l
