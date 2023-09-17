@@ -165,14 +165,10 @@ setopt transient_rprompt
 setopt combining_chars
 ## フック
 autoload -Uz add-zsh-hook
-## Esc, e でコマンドラインをテキストエディタで編集できるように
-autoload -Uz edit-command-line
-zle -N edit-command-line
-bindkey '^[e' edit-command-line
-## Esc, c でクリップボードをテキストエディタで編集できるように
+## Ctrl-X Ctrl-C でクリップボードをテキストエディタで編集できるように (キーバインドは Zim の input モジュールの Ctrl-X Ctrl-E (外部エディタでコマンドラインの編集) に合わせて)
 _edit-clipboard() { exec < /dev/tty; edit-clipboard; }
 zle -N edit-clipboard _edit-clipboard
-bindkey '^[c' edit-clipboard
+bindkey '^X^C' edit-clipboard
 
 
 # アプリケーション依存設定
