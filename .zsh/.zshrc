@@ -339,12 +339,8 @@ else
   fi
 fi
 
-## zsh から Mac の通知センターを利用する
-export SYS_NOTIFIER="$(builtin command -v terminal-notifier)"
-if [ $SYS_NOTIFIER ]; then
-  export NOTIFY_COMMAND_COMPLETE_TIMEOUT=10
-  source $ZDOTDIR/zsh-notify/notify.plugin.zsh
-fi
+## zsh-notifier のタイムアウトの時間を 10 秒にする
+zstyle ':notify:*' command-complete-timeout 10
 
 
 # zsh プロファイラが読み込まれていたら、ロード完了時に
