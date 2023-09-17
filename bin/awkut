@@ -1,6 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-args="$(echo "$*" | sed -E 's/[0-9]+/$&/g')"
-exec awk "{ print $args }"

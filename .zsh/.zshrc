@@ -167,19 +167,6 @@ bindkey '^[e' edit-command-line
 _edit-clipboard() { exec < /dev/tty; edit-clipboard; }
 zle -N edit-clipboard _edit-clipboard
 bindkey '^[c' edit-clipboard
-## Esc, m で入力中コマンドの man page を表示する
-_manpage-for-current-buffer() {
-  exec < /dev/tty
-  clear
-  echo "$BUFFER" | head -n1 | sed -E 's/^.*\|//;s/^ *[^ ]*=[^ ]*//' | awk '{print $1}' | xargs man
-  print -z "$PREBUFFER$BUFFER"
-  zle send-break
-}
-zle -N manpage-for-current-buffer _manpage-for-current-buffer
-bindkey '^[m' manpage-for-current-buffer
-# 自作コマンドの補完設定を読み込む
-# autoload -Uz git-_my-compinit && git-_my-compinit
-# ↑ 重い……
 
 
 # アプリケーション依存設定

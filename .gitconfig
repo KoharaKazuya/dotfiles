@@ -51,7 +51,6 @@
     mc = merged-clean --all
     ms = merge --squash
     pl = pull --ff-only --prune
-    pr = create-pull-request
     ps = push origin
     rf = flow release finish
     rs = flow release start
@@ -60,11 +59,9 @@
     bbd = backup-delete
     cob = checkout -b
     cod = checkout-default-branch
-    coi = checkout-issue
     reb = clean-rebase
     rev = rev-parse --short --default HEAD
     imgdiff = -c 'diff.image.command = imgdiff --reverse' -c 'core.pager =' diff --diff-filter=M
-    rmpr = remove-pullrequest-checkout
     # 人間らしいエイリアス (http://postd.cc/human-git-aliases/)
     unstage = reset --quiet HEAD --
     discard = checkout --
