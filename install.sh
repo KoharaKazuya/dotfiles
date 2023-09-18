@@ -6,7 +6,9 @@ set -e
 if [ "${REMOTE_CONTAINERS:-}" = true ] || [ "${CODESPACES:-}" = true ]; then
   if cat /etc/os-release | grep PRETTY_NAME= | grep -i debian >/dev/null && type apt-get >/dev/null; then
     # 日本語化
-    sudo sed -i -E 's/# (ja_JP.UTF-8)/\1/' /etc/locale.gen && sudo locale-gen && sudo update-locale LANG=ja_JP.UTF-8 # 日本語化
+    if [ "$LANG" != ja_JP.UTF-8 ]; then
+      sudo sed -i -E 's/# (ja_JP.UTF-8)/\1/' /etc/locale.gen && sudo locale-gen && sudo update-locale LANG=ja_JP.UTF-8
+    fi
     # よく使うコマンドをインストールする
     sudo apt-get update && sudo apt-get install -y \
       vim \
