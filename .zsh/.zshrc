@@ -224,23 +224,22 @@ fi
 
 # 絶対パスを記録する cd
 function cd() {
-  # 引数を2つとる cd (zsh の独自機能) の場合はフックしない
-  if [ $# -eq 1 ]; then
-    # 再帰を防ぐためにビルトインの cd を呼び出し
-    builtin cd $1
-    # cd に失敗したら終了
-    if [ $? -ne 0 ]; then
-      return 1
-    fi
-    # シェルからの直接呼び出しの場合のみ history を書き換え
-    if [ ${#funcstack[*]} -eq 1 ]; then
-      echo cd $PWD >> $HISTFILE
-      fc -R
-    fi
+  # 再帰を防ぐためにビルトインの cd を呼び出し
+  builtin cd "$@"
+  # cd に失敗したら終了
+  if [ $? -ne 0 ]; then return 1; fi
+  # history に絶対パスを登録する
+  if [ "$(builtin cd $(pwd) 2>/dev/null && pwd)" = "$(pwd)" ]; then
+    print -sr -- "cd $(pwd)"
   else
-    builtin cd $*
+    print -sr -- "cd '$(pwd)'"
   fi
 }
+function _cd_no_history() {
+  # cd コマンドは履歴に登録しない (上記の print によって登録される)
+  ! [[ "${1%%$'\n'}" =~ "^ *cd " ]]
+}
+zshaddhistory_functions+=(_cd_no_history)
 
 # cd したときに自動で ls を表示する
 ## ディレクトリ移動時に ls を実行する
