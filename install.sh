@@ -14,9 +14,14 @@ if [ "${REMOTE_CONTAINERS:-}" = true ] || [ "${CODESPACES:-}" = true ]; then
       vim \
       tig \
       ripgrep
-    if [ "$(uname -m)" = "amd64" ]; then
-      curl -sSLf -o /tmp/git-delta-musl_0.15.1_amd64.deb https://github.com/dandavison/delta/releases/download/0.15.1/git-delta-musl_0.15.1_amd64.deb
-      sudo apt-get install -y /tmp/git-delta-musl_0.15.1_amd64.deb
+    if ! dpkg --status git-delta >/dev/null 2>&1; then
+      ARCH=
+      if [ "$(uname -m)" = "amd64" ] || [ "$(uname -m)" = "x86_64" ]; then ARCH=amd64; fi
+      if [ "$(uname -m)" = "arm64" ] || [ "$(uname -m)" = "aarch64" ]; then ARCH=arm64; fi
+      if [ -n "$ARCH" ]; then
+        curl -sSLf -o /tmp/git-delta.deb https://github.com/dandavison/delta/releases/download/0.16.5/git-delta_0.16.5_$ARCH.deb
+        sudo apt-get install -y /tmp/git-delta.deb
+      fi
     fi
   fi
 fi
