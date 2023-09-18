@@ -13,7 +13,10 @@ if [ "${REMOTE_CONTAINERS:-}" = true ] || [ "${CODESPACES:-}" = true ]; then
     sudo apt-get update && sudo apt-get install -y \
       vim \
       tig \
-      ripgrep
+      ripgrep \
+      file \
+      bat
+    mkdir -p "$HOME/bin" && ln -s /usr/bin/batcat "$HOME/bin/bat"
     if ! dpkg --status git-delta >/dev/null 2>&1; then
       ARCH=
       if [ "$(uname -m)" = "amd64" ] || [ "$(uname -m)" = "x86_64" ]; then ARCH=amd64; fi
