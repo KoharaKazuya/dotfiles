@@ -75,7 +75,7 @@
     remotes = remote -v
     move = mv
     remove = rm
-    contributors = shortlog -s -n --email
+    contributors = shortlog -s -n --email --no-merges
     filetrail = log --follow --oneline
 
 [filter "lfs"]
