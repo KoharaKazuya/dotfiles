@@ -55,6 +55,9 @@
     rf = flow release finish
     rs = flow release start
     sh = show --color-words='[a-zA-Z0-9]+|[^a-zA-Z0-9 ]+'
+    wa = worktree-add
+    wl = worktree list
+    wr = worktree-remove
     aff = all-fast-forward-merge
     bbd = backup-delete
     cob = checkout -b

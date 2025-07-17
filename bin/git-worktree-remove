@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -eu
+
+root="$(git config private.default-worktree-root || echo ./worktrees)/"
+git worktree remove "$root$1"

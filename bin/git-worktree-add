@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+root="$(git config private.default-worktree-root || echo ./worktrees)/"
+if [ -z "$(git branch --list "$1")" ]; then
+  git worktree add -b "$1" "$root$1"
+else
+  git worktree add "$root$1" "$1"
+fi
