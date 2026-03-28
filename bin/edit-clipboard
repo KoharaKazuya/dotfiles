@@ -3,11 +3,12 @@
 set -eu
 
 script=$(cat <<EOS
-t="\$(mktemp)"
+d="\$HOME/.local/state/clipboard"
+mkdir -p "\$d"
+t="\$d/\$(date +%Y%m%d-%H%M%S).md"
 pbpaste > "\$t"
 vim "+set nofixeol noeol syntax=markdown filetype=markdown" "\$t"
 cat "\$t" | pbcopy
-rm "\$t"
 EOS
 )
 
