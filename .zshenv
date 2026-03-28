@@ -8,6 +8,7 @@ export LANG=ja_JP.UTF-8
 typeset -U path manpath
 path=(
     $HOME/bin(N-/)
+    $HOME/.local/bin(N-/)
     $HOME/projects/dotfiles/bin
     $path
 )
