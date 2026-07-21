@@ -46,14 +46,10 @@
     cp = cherry-pick
     dc = diff --color-words='[a-zA-Z0-9]+|[^a-zA-Z0-9 ]+' --cached
     fc = first-commit
-    ff = flow feature finish
-    fs = flow feature start
     mc = merged-clean --all
     ms = merge --squash
     pl = pull --ff-only --prune
     ps = push origin
-    rf = flow release finish
-    rs = flow release start
     sh = show --color-words='[a-zA-Z0-9]+|[^a-zA-Z0-9 ]+'
     wa = worktree-add
     wl = worktree list
