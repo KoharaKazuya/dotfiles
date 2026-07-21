@@ -1,6 +1,10 @@
-.zcompcache
-.zcompdump
+# zsh 補完システムが生成するキャッシュ
+.zcompcache/
+.zcompdump*
+
+# zcompile によるコンパイル済みファイル
 *.zwc
-*.zwc.old
+
+# Zimfw が生成するファイル (バージョン固定のため zimfw.zsh 本体のみ追跡する)
 .zim/*
 !.zim/zimfw.zsh
