@@ -69,15 +69,39 @@ GIT_HOOKS_IGNORE_GITLEAKS=1 git commit ...
 マシン固有のチェックは `~/.config/git/hooks/<フック名>.d/*.sh` に置く
 (このリポジトリには入らない)。
 
-利用できる関数は `base.sh` を参照。`info` / `warn` / `error` /
-`show_ignore_variable` / `changed_files_by_commit` / `changed_files_by_merge`。
+利用できる関数は `base.sh` を参照。
+
+| 関数 | 用途 |
+| --- | --- |
+| `info` / `warn` / `error` | ログ出力 |
+| `show_ignore_variable` | 無効化用の環境変数名を案内する |
+| `changed_files_by_commit` | コミット対象のファイル一覧 |
+| `changed_files_by_merge` | マージで変更されたファイル一覧 |
+
+`GIT_HOOKS_DEBUG=1` を設定すると `set -x` で実行内容を表示する。
 
 ## リポジトリ固有のフック
 
-`core.hooksPath` を設定すると git は `.git/hooks` を完全に無視する。
-その代替として、`base.sh` は同名のリポジトリ固有フックがあれば実行する。
-ただし救済できるのはこのディレクトリに存在するフック名だけなので、
-`post-rewrite` などをリポジトリ側が入れている場合は動かない。
+`core.hooksPath` を設定すると git は `.git/hooks` を**完全に無視する**。
+救済できるのはこのディレクトリに存在するフック名だけなので、
+グローバル側にフック名が無いとリポジトリ固有のフックは実行される機会を失う。
+
+そのため、チェックを持たないフックも含めてクライアント側のフックを一通り
+`base.sh` へのシンボリックリンクにしてある。`.d` を持たないフックは
+`.git/hooks/<フック名>` への転送だけを行う。これにより
+`git lfs install` や husky が入れるフックが従来どおり動作する。
+
+意図的に転送していないフック:
+
+| フック | 理由 |
+| --- | --- |
+| `reference-transaction` | ref 更新のたびに複数回呼ばれ、負荷が高い |
+| `post-index-change` | インデックス書き込みのたびに呼ばれる |
+| `fsmonitor-watchman` | `git status` のたびに呼ばれる |
+| `push-to-checkout` | 存在すると git の既定動作を*置き換えて*しまうため、no-op を置くと push 先のワークツリーが更新されなくなる |
+| サーバ側フック (`pre-receive` など) | 開発マシンでは使わない |
+
+転送 1 回あたりの追加コストは 6ms 程度。
 
 ## 制約
 

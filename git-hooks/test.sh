@@ -163,6 +163,43 @@ case "$out" in
 esac
 
 # ---------------------------------------------------------------------------
+echo "== base.sh: .d を持たないフックもリポジトリ固有フックへ転送すること =="
+# ---------------------------------------------------------------------------
+# core.hooksPath を設定すると git は .git/hooks を完全に無視する。
+# そのためグローバル側にフック名が存在しないと、リポジトリ固有のフックが
+# 実行される機会そのものが消える。git lfs install が入れる pre-push などが
+# 動かなくなるため、クライアント側のフックは全て base.sh へ向けてある。
+R=$(new_repo forward)
+mkdir -p "$TMPROOT/forward-bare" "$R/.git/hooks"
+git init -q --bare "$TMPROOT/forward-bare/r.git"
+git -C "$R" remote add origin "$TMPROOT/forward-bare/r.git"
+for h in pre-push post-checkout post-commit commit-msg; do
+  printf '#!/bin/sh\necho FORWARDED_%s >&2\nexit 0\n' "$h" > "$R/.git/hooks/$h"
+  chmod +x "$R/.git/hooks/$h"
+done
+echo ok > "$R/a.txt"
+git -C "$R" add a.txt
+out=$( cd "$R" && git commit -m "feat: a" 2>&1 )
+case "$out" in
+  *FORWARDED_commit-msg*) ok "commit-msg が転送される" ;;
+  *)                      ng "commit-msg が転送される" ;;
+esac
+case "$out" in
+  *FORWARDED_post-commit*) ok "post-commit が転送される" ;;
+  *)                       ng "post-commit が転送される" ;;
+esac
+out=$( cd "$R" && git push origin main 2>&1 )
+case "$out" in
+  *FORWARDED_pre-push*) ok "pre-push が転送される (git lfs install 相当)" ;;
+  *)                    ng "pre-push が転送される (git lfs install 相当)" ;;
+esac
+out=$( cd "$R" && git checkout -b another 2>&1 )
+case "$out" in
+  *FORWARDED_post-checkout*) ok "post-checkout が転送される" ;;
+  *)                         ng "post-checkout が転送される" ;;
+esac
+
+# ---------------------------------------------------------------------------
 echo "== base.sh: 1 つのチェックが落ちても後続が実行されること =="
 # ---------------------------------------------------------------------------
 R=$(new_repo isolation)
