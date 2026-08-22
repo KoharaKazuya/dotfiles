@@ -1,0 +1,168 @@
+#!/usr/bin/env perl
+#
+# git-scan-unicode - 差分中の危険な Unicode 文字を検出する
+#
+# Trojan Source 攻撃 (CVE-2021-42574 / CVE-2021-42694) をはじめとする、
+# 「人間が読む見た目」と「コンパイラが読む内容」がずれる文字の混入を検出する。
+#
+# 依存はコア Perl のみ。Node などの外部ランタイムを必要としない
+# (フックから呼ぶため、可用性が最優先)。
+#
+# 終了コード:
+#   0  問題なし
+#   1  WARN のみ (正当な用途がありうるもの)
+#   2  BLOCK あり (ソースコードに正当な用途がないもの)
+#   3  使い方の誤り
+#
+use strict;
+use warnings;
+use Encode qw(decode);
+use Unicode::Normalize qw(NFC);
+
+my $PROG = "git scan-unicode";
+
+sub usage {
+  print STDERR <<"EOS";
+usage: $PROG [<options>] [<rev-range>]
+
+  差分に追加された行を走査し、危険な Unicode 文字を報告する。
+
+options:
+  --staged        インデックスに登録済みの差分を対象にする (既定)
+  --worktree      ワークツリーの未ステージ差分を対象にする
+  --warn-only     BLOCK を WARN に格下げする (終了コードが 2 にならない)
+  --no-color      色を付けない
+  -h, --help      この使い方を表示する
+
+examples:
+  $PROG --staged              # コミット前の自己チェック
+  $PROG ORIG_HEAD..HEAD       # 取り込んだ差分のチェック
+  $PROG main..feature         # レビュー時のチェック
+EOS
+}
+
+my ($mode, $range, $warn_only, $no_color) = ("staged", undef, 0, 0);
+while (@ARGV) {
+  my $a = shift @ARGV;
+  if    ($a eq "--staged")    { $mode = "staged" }
+  elsif ($a eq "--worktree")  { $mode = "worktree" }
+  elsif ($a eq "--warn-only") { $warn_only = 1 }
+  elsif ($a eq "--no-color")  { $no_color = 1 }
+  elsif ($a eq "-h" || $a eq "--help") { usage(); exit 0 }
+  elsif ($a =~ /^-/) { print STDERR "$PROG: unknown option: $a\n"; usage(); exit 3 }
+  else { $range = $a; $mode = "range" }
+}
+
+# 検出した行をそのまま出すため、STDERR も UTF-8 で出力する
+binmode(STDERR, ":encoding(UTF-8)");
+
+$no_color = 1 unless -t STDERR;
+$no_color = 1 if ($ENV{NO_COLOR} // "") ne "";
+my ($RED, $YEL, $DIM, $RST) = $no_color ? ("", "", "", "")
+                                        : ("\e[31m", "\e[33m", "\e[2m", "\e[0m");
+
+# -U0 で追加行のみを取り出す。--no-ext-diff で imgdiff などの外部 diff を回避し、
+# core.quotePath=false でパスをそのまま得る。
+my @cmd = (qw(git -c core.quotePath=false diff --no-color --no-ext-diff --no-textconv -U0));
+push @cmd, "--cached"   if $mode eq "staged";
+push @cmd, $range       if $mode eq "range";
+
+open(my $fh, "-|", @cmd) or do {
+  print STDERR "$PROG: git diff を起動できません: $!\n";
+  exit 3;
+};
+binmode($fh, ":raw");
+
+my ($block, $warn) = (0, 0);
+my ($file, $lineno) = ("", 0);
+
+sub cp { sprintf("U+%04X", ord($_[0])) }
+
+# 1 行を検査し、(BLOCK 理由の配列, WARN 理由の配列) を返す
+sub inspect {
+  my ($line) = @_;
+  my (@blk, @wrn);
+
+  # --- BLOCK: ソースコードに正当な用途がない ---
+
+  # 双方向制御文字 (Trojan Source, CVE-2021-42574)。
+  # 表示順とバイト順を食い違わせ、レビュアーに嘘のコードを見せる。
+  push @blk, map { "BIDI " . cp($_) } ($line =~ /(\p{Bidi_Control})/g);
+
+  # 行区切り・段落区切り。行単位のツールから内容を隠せる。
+  push @blk, map { "SEPARATOR " . cp($_) }
+             ($line =~ /(\p{Line_Separator}|\p{Paragraph_Separator})/g);
+
+  # C0/C1 制御文字。ただしタブと CR は正当 (CRLF のワークツリーがある)。
+  push @blk, map { "CONTROL " . cp($_) }
+             grep { $_ ne "\t" && $_ ne "\r" } ($line =~ /(\p{Cc})/g);
+
+  # 不可視文字。ただし絵文字の ZWJ 連結と異体字セレクタは正当なので、
+  # 先に絵文字シーケンスを取り除いてから走査する。
+  my $probe = $line;
+  $probe =~ s/
+    \p{Extended_Pictographic} (?:\x{FE0E}|\x{FE0F})?
+    (?: \x{200D} \p{Extended_Pictographic} (?:\x{FE0E}|\x{FE0F})? )*
+  //gx;
+  push @blk, map { "INVISIBLE " . cp($_) }
+             ($probe =~ /(\p{Default_Ignorable_Code_Point})/g);
+
+  # --- WARN: 正当な用途がありうるので止めない ---
+
+  # NFC 正規化されていない (macOS 由来の NFD、分解された濁点など)
+  push @wrn, "NOT-NFC" if NFC($line) ne $line;
+
+  # 紛らわしいスクリプト混在 (homoglyph, CVE-2021-42694)。
+  # 日本語ソースでは Latin と日本語の混在が普通なので、
+  # Latin と見分けの付かないキリル文字・ギリシャ文字の混在だけを対象にする。
+  while ($line =~ /([\p{L}\p{M}\p{Nd}_]{2,})/g) {
+    my $word = $1;
+    my %seen;
+    for my $c (split //, $word) {
+      next if $c =~ /[\p{Script_Extensions=Common}\p{Script_Extensions=Inherited}]/;
+      my $k = $c =~ /[\p{Han}\p{Hiragana}\p{Katakana}]/ ? "Japanese"
+            : $c =~ /\p{Latin}/    ? "Latin"
+            : $c =~ /\p{Cyrillic}/ ? "Cyrillic"
+            : $c =~ /\p{Greek}/    ? "Greek"
+            :                        "Other";
+      $seen{$k} = 1;
+    }
+    my $confusable = ($seen{Latin} && ($seen{Cyrillic} || $seen{Greek}))
+                  || ($seen{Cyrillic} && $seen{Greek});
+    push @wrn, "MIXED-SCRIPT($word: " . join("+", sort keys %seen) . ")" if $confusable;
+  }
+
+  return (\@blk, \@wrn);
+}
+
+while (my $raw = <$fh>) {
+  $raw =~ s/\r?\n\z//;
+  # 不正なバイト列でも落ちないように置換文字へフォールバックする
+  my $line = decode("UTF-8", $raw, Encode::FB_DEFAULT);
+
+  if ($line =~ m{^\+\+\+ b/(.*)$}) { $file = $1; next }
+  if ($line =~ m{^\+\+\+ /dev/null$}) { $file = ""; next }
+  next if $line =~ m{^--- };
+  if ($line =~ /^\@\@ -\S+ \+(\d+)/) { $lineno = $1; next }
+  next unless $line =~ /^\+/;
+
+  my $body = substr($line, 1);
+  my ($blk, $wrn) = inspect($body);
+
+  if (@$blk) {
+    $block = 1;
+    printf STDERR "%s%-5s%s %s:%d  %s\n%s      %s%s\n",
+      ($warn_only ? $YEL : $RED), ($warn_only ? "WARN" : "BLOCK"), $RST,
+      $file, $lineno, join(", ", @$blk), $DIM, $body, $RST;
+  } elsif (@$wrn) {
+    $warn = 1;
+    printf STDERR "%sWARN %s %s:%d  %s\n%s      %s%s\n",
+      $YEL, $RST, $file, $lineno, join(", ", @$wrn), $DIM, $body, $RST;
+  }
+  $lineno++;
+}
+close($fh);
+
+exit 2 if $block && !$warn_only;
+exit 1 if $block || $warn;
+exit 0;

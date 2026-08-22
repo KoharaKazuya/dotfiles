@@ -1,0 +1,63 @@
+name: Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  hooks:
+    name: git-hooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # /bin/sh が dash である環境で動くことが要件なので dash で実行する
+      - name: Run hook tests
+        run: sh git-hooks/test.sh
+
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint shell scripts
+        env:
+          LC_ALL: C.UTF-8
+        run: shellcheck --shell=sh git-hooks/base.sh git-hooks/*.d/*.sh git-hooks/test.sh
+
+  unicode:
+    name: trojan-source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # ローカルフックは警告止まりなので、強制力はここに置く
+      - name: Scan for dangerous Unicode
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+          if [ -z "$base" ]; then base=$(git rev-parse HEAD~1 2>/dev/null || git hash-object -t tree /dev/null); fi
+          ./bin/git-scan-unicode --no-color "$base..HEAD"
+
+  commitlint:
+    name: conventional-commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # グローバルの commit-msg フックから移設したチェック。
+      # プロジェクト規約はプロジェクト側で強制するのが本来の層
+      - name: Check commit messages
+        run: |
+          fmt='^((build|ci|docs|feat|fix|perf|refactor|style|test)(\(.*\))?!?: .+|(Merge|Revert|fixup!|squash!) .*|v[0-9]+(\.[0-9]+)*)'
+          bad=0
+          for sha in $(git rev-list ${{ github.event.pull_request.base.sha }}..HEAD); do
+            subject=$(git log -1 --format=%s "$sha")
+            if ! printf '%s\n' "$subject" | grep -qE "$fmt"; then
+              echo "::error::Conventional Commits に従っていません: $sha $subject"
+              bad=1
+            fi
+          done
+          exit $bad

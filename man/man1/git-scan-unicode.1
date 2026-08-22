@@ -1,0 +1,39 @@
+.TH git-scan-unicode 1
+.SH NAME
+git-scan-unicode \- detect dangerous Unicode characters in a diff
+.SH SYNOPSIS
+.B git scan-unicode
+[\fB\-\-staged\fR|\fB\-\-worktree\fR|\fIrev-range\fR]
+[\fB\-\-warn\-only\fR]
+[\fB\-\-no\-color\fR]
+.SH DESCRIPTION
+Scans lines added by a diff for Unicode characters that make the rendered text
+disagree with what a compiler reads, as used by the Trojan Source attacks
+(CVE-2021-42574 and CVE-2021-42694).
+.PP
+Bidirectional controls, line/paragraph separators, C0/C1 controls and invisible
+formatting characters outside emoji sequences are reported as BLOCK. Text that
+is not NFC-normalised and confusable mixed-script words are reported as WARN.
+.SH EXIT STATUS
+.TP
+.B 0
+No findings.
+.TP
+.B 1
+WARN findings only.
+.TP
+.B 2
+At least one BLOCK finding.
+.TP
+.B 3
+Usage error.
+.SH EXAMPLES
+.TP
+.B git scan-unicode --staged
+Check before committing.
+.TP
+.B git scan-unicode ORIG_HEAD..HEAD
+Check what a merge just brought in.
+.SH SEE ALSO
+.UR https://trojansource.codes/
+.UE

@@ -76,17 +76,13 @@
     remove = rm
     contributors = shortlog -s -n --email --no-merges
     filetrail = log --follow --oneline
+    scanu = scan-unicode
 
 [filter "lfs"]
     process = git-lfs filter-process
     required = true
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f
-[secrets]
-    providers = git secrets --aws-provider
-    patterns = (\"|')?(AWS|aws|Aws)?_?(SECRET|secret|Secret)?_?(ACCESS|access|Access)?_?(KEY|key|Key)(\"|')?\\s*(:|=>|=)\\s*(\"|')?[A-Za-z0-9/\\+=]{40}(\"|')?
-    allowed = AKIAIOSFODNN7EXAMPLE
-    allowed = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 [private]
     default-branch = main
 
