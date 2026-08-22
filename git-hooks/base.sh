@@ -8,7 +8,7 @@
 #
 # 設計方針:
 #   - グローバルに効くフックは「どこでも欲しい安全網」だけに絞る。
-#     プロジェクト規約 (コミットメッセージ形式など) は CI に、
+#     プロジェクト規約 (コミットメッセージ形式など) は各プロジェクトの CI に、
 #     作業リマインダは linter やエディタに置く。
 #   - チェックは互いに独立させる。1 つが落ちても残りは必ず実行する。
 #   - POSIX sh (dash) で動くこと。bash/zsh 専用の構文は使わない。
@@ -45,32 +45,7 @@ export PATH
 GIT_COMMON_DIR=$(git rev-parse --git-common-dir)
 LOCAL_HOOK="$GIT_COMMON_DIR/hooks/$HOOK_NAME"
 
-# 基本関数を定義する
-#
-# 元ネタは hookin コマンド
-# @see http://yosuke-furukawa.hatenablog.com/entry/2014/03/31/125131
-
-changed_files_by_commit() {
-  case "$HOOK_NAME" in
-    pre-commit  ) git diff --cached --name-only;;
-    post-commit ) git diff --name-only HEAD~;;
-    *           ) return 1;;
-  esac
-}
-changed_files_by_merge() {
-  git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD
-}
-show_ignore_variable() {
-  printf 'このチェックを無効化するには以下のように環境変数を設定してください\n\n  $ %s=1 git %s ...\n\n' \
-    "$IGNORE_VARNAME" "$(echo "$HOOK_NAME" | sed 's/^pre-//;s/^post-//;s/-msg$//')"
-}
-
 # ログ出力関数を定義する
-info() {
-  rev=$(    tput rev     2>/dev/null || : )
-  reset=$(  tput sgr0    2>/dev/null || : )
-  printf "\n$rev INFO $reset %s\n\n" "$*" >&2
-}
 warn() {
   yellow=$( tput setaf 3 2>/dev/null || : )
   rev=$(    tput rev     2>/dev/null || : )
@@ -82,6 +57,12 @@ error() {
   rev=$(    tput rev     2>/dev/null || : )
   reset=$(  tput sgr0    2>/dev/null || : )
   printf "\n$red$rev ERROR $reset$red %s$reset\n\n" "$*" >&2
+}
+
+# 無効化用の環境変数名を案内する
+show_ignore_variable() {
+  printf 'このチェックを無効化するには以下のように環境変数を設定してください\n\n  $ %s=1 git %s ...\n\n' \
+    "$IGNORE_VARNAME" "$(echo "$HOOK_NAME" | sed 's/^pre-//;s/^post-//;s/-msg$//')"
 }
 
 # ファイル名と同名のディレクトリ (ローカル版も含め) の中身を全て読み込む。

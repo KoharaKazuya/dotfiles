@@ -72,10 +72,8 @@ GIT_HOOKS_IGNORE_GITLEAKS=1 git commit ...
 
 | 関数 | 用途 |
 | --- | --- |
-| `info` / `warn` / `error` | ログ出力 |
+| `warn` / `error` | ログ出力 |
 | `show_ignore_variable` | 無効化用の環境変数名を案内する |
-| `changed_files_by_commit` | コミット対象のファイル一覧 |
-| `changed_files_by_merge` | マージで変更されたファイル一覧 |
 
 `GIT_HOOKS_DEBUG=1` を設定すると `set -x` で実行内容を表示する。
 
