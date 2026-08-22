@@ -11,7 +11,7 @@
 | --- | --- |
 | git 拡張の配線 (git-lfs) | 各リポジトリ (`git lfs install`) |
 | どこでも効かせたい安全網 | **ここ** |
-| プロジェクト規約 (Conventional Commits) | CI |
+| プロジェクト規約 (Conventional Commits) | 各プロジェクトの CI |
 | 作業リマインダ (TODO, npm install) | linter / エディタ / direnv |
 
 ## チェック一覧
@@ -37,9 +37,9 @@ git scan-unicode ORIG_HEAD..HEAD    # 取り込んだ差分
 git scan-unicode main..feature      # レビュー時
 ```
 
-`post-merge` は事後なので止められない。**強制力は CI に置いている**
-(`.github/workflows/test.yml` の `trojan-source` ジョブ)。
-ローカルフックは早期警告と位置づける。
+`post-merge` は事後なので止められない。取り込んだ直後に気づくための警告であり、
+それ自体に強制力は無い。強制力を持たせられるのは対象のリポジトリ側だけなので、
+必要ならそのリポジトリの CI に検査を入れる。
 
 多層防御として、以下の既存の仕組みも併用するとよい。
 
