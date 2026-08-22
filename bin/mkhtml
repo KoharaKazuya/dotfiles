@@ -86,8 +86,8 @@ const output = `<!DOCTYPE html>
     ? `
     <link
       rel="stylesheet"
-      href="https://unpkg.com/sanitize.css@11.0.0/sanitize.css"
-      integrity="sha384-KcbkICW9AiIQ2NkoMVCyn4KAWRa9tE2anP60+J1I+hntFtttZH/7QNUMkaua6NN9"
+      href="https://unpkg.com/sanitize.css@13.0.0/sanitize.css"
+      integrity="sha384-Y/A06Qtl2mnoVrQcjuCqbLhsSqIuwQgh9zwONS7tTxX3IjfX9F77ULLFSSQ2REgf"
       crossorigin="anonymous"
     />`
     : ""
