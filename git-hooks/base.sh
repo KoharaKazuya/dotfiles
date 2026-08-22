@@ -87,8 +87,6 @@ error() {
 # ファイル名と同名のディレクトリ (ローカル版も含め) の中身を全て読み込む。
 #
 # 各チェックはサブシェルで実行し、1 つが失敗しても残りを必ず実行する。
-# (以前は同一シェルに source していたため、アルファベット順で先に来る
-#  チェックが落ちると後続のチェックが丸ごと飛んでいた)
 failed=0
 for f in "$HOOKS_DIR/$HOOK_NAME.d"/*.sh "$HOME/.config/git/hooks/$HOOK_NAME.d"/*.sh; do
   # glob にマッチしなかった場合はスキップ
@@ -105,9 +103,9 @@ for f in "$HOOKS_DIR/$HOOK_NAME.d"/*.sh "$HOME/.config/git/hooks/$HOOK_NAME.d"/*
   fi
 done
 
-# 同名のスクリプトがリポジトリ自体に存在するなら、そのファイルを実行する
-# (このファイルは core.hooksPath の設定によりグローバルに呼ばれるため、
-#  リポジトリ固有の .git/hooks は git から無視されてしまう。その代替)
+# 同名のスクリプトがリポジトリ自体に存在するなら、そのファイルを実行する。
+# core.hooksPath を設定すると git は .git/hooks を完全に無視するため、
+# リポジトリ固有のフックはここから呼ばないと実行されない
 if [ -x "$LOCAL_HOOK" ]; then
   if ! GIT_HOOKS_LOOP_DETECT=1 "$LOCAL_HOOK" "$@"; then
     failed=1

@@ -1,0 +1,132 @@
+name: Install Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+# install.sh が新規環境で最後まで通り、その結果として
+# dotfiles が実際に機能する状態になることを確認する。
+#
+# install.sh は ~/projects/dotfiles が無ければ master を clone するため、
+# そのままでは PR の内容を検証できない。チェックアウト済みの作業ツリーを
+# あらかじめ同じ場所に置き、clone を省略させて検証する。
+
+jobs:
+  install:
+    name: install (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      # 既存の ~/.gitconfig などに影響されないよう、まっさらな HOME で実行する
+      - name: Set up a fresh HOME
+        run: echo "HOME=$(mktemp -d)" >> "$GITHUB_ENV"
+
+      - name: Place the working tree where install.sh expects it
+        run: |
+          mkdir -p "$HOME/projects"
+          cp -a "$GITHUB_WORKSPACE" "$HOME/projects/dotfiles"
+
+      - name: Run install.sh
+        env:
+          SHELL: /bin/bash
+        run: sh "$HOME/projects/dotfiles/install.sh"
+
+      - name: Verify dotfiles are linked
+        run: |
+          set -eu
+          for f in .gitconfig .gitignore .gitattributes .zshenv .vimrc; do
+            if [ ! -L "$HOME/$f" ]; then
+              echo "::error::$f がシンボリックリンクになっていません"; exit 1
+            fi
+            if [ "$(readlink "$HOME/$f")" != "$HOME/projects/dotfiles/$f" ]; then
+              echo "::error::$f のリンク先が不正です: $(readlink "$HOME/$f")"; exit 1
+            fi
+          done
+
+      - name: Verify git picks up the config
+        run: |
+          set -eu
+          hooks=$(git config --get core.hooksPath)
+          [ -n "$hooks" ] || { echo "::error::core.hooksPath が読めません"; exit 1; }
+          [ -x "$HOME/projects/dotfiles/git-hooks/pre-commit" ] \
+            || { echo "::error::pre-commit フックが見つかりません"; exit 1; }
+
+      # git-scan-unicode はコア Perl のみに依存する。
+      # 新規環境でその前提が成り立つことを確認する
+      - name: Verify the perl assumption holds
+        run: |
+          set -eu
+          command -v perl >/dev/null || { echo "::error::perl がありません"; exit 1; }
+          perl -MEncode -MUnicode::Normalize -e 'print "perl modules ok\n"'
+
+      # インストール結果が実際に機能することまで確認する
+      - name: Verify hooks actually run after install
+        run: |
+          set -eu
+          repo=$(mktemp -d)
+          git init -q -b main "$repo"
+          git -C "$repo" config user.email test@example.com
+          git -C "$repo" config user.name test
+
+          # Trojan Source (U+2066 / U+2069) を含むコミットは拒否されること
+          printf 'if (l != %s admin %s) {\n' \
+            "$(printf '\342\201\246')" "$(printf '\342\201\251')" > "$repo/evil.c"
+          git -C "$repo" add evil.c
+          if (cd "$repo" && git commit -q -m "feat: evil" >/dev/null 2>&1); then
+            echo "::error::Trojan Source を含むコミットが通ってしまいました"; exit 1
+          fi
+
+          # 健全なコミットは通ること
+          rm -f "$repo/evil.c"
+          git -C "$repo" rm -q --cached evil.c
+          echo 'int main(void) { return 0; }' > "$repo/ok.c"
+          git -C "$repo" add ok.c
+          (cd "$repo" && git commit -q -m "feat: ok") \
+            || { echo "::error::健全なコミットが通りません"; exit 1; }
+
+  devcontainer:
+    name: install (devcontainer)
+    runs-on: ubuntu-latest
+    # Codespaces / Dev Containers 向けの分岐は Debian 前提なので、
+    # 素の Debian コンテナで検証する
+    container: debian:bookworm
+    env:
+      CODESPACES: "true"
+    steps:
+      - name: Prepare a bare Debian environment
+        run: |
+          apt-get update
+          apt-get install -y git curl ca-certificates sudo locales
+
+      - uses: actions/checkout@v4
+
+      - name: Place the working tree where install.sh expects it
+        run: |
+          mkdir -p "$HOME/projects"
+          cp -a "$GITHUB_WORKSPACE" "$HOME/projects/dotfiles"
+
+      - name: Run install.sh
+        env:
+          SHELL: /bin/bash
+        run: sh "$HOME/projects/dotfiles/install.sh"
+
+      - name: Verify the devcontainer extras are installed
+        run: |
+          set -eu
+          for c in vim tig rg file; do
+            command -v "$c" >/dev/null || { echo "::error::$c がありません"; exit 1; }
+          done
+          [ -x "$HOME/bin/bat" ] || { echo "::error::bat のリンクがありません"; exit 1; }
+
+      - name: Verify dotfiles are linked
+        run: |
+          set -eu
+          [ -L "$HOME/.gitconfig" ] || { echo "::error::.gitconfig が未リンクです"; exit 1; }
+          git config --get core.hooksPath >/dev/null \
+            || { echo "::error::core.hooksPath が読めません"; exit 1; }

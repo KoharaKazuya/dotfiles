@@ -2,10 +2,8 @@
 #
 # git-hooks と git-scan-unicode の回帰テスト。
 #
-# これまでの不具合はどれも「壊れていることに気づけない」形で起きていた
-# (GNU sed と BSD sed の差で検査が丸ごと空振りする、dash に無い builtin を
-# 使っていて全チェックが無言で no-op になる、など)。
-# そのため挙動をテストで固定する。
+# フックの不具合は「壊れていることに気づけない」形で起きるため、
+# 挙動をテストで固定する。
 #
 #   $ sh git-hooks/test.sh
 #
@@ -166,9 +164,8 @@ esac
 echo "== base.sh: .d を持たないフックもリポジトリ固有フックへ転送すること =="
 # ---------------------------------------------------------------------------
 # core.hooksPath を設定すると git は .git/hooks を完全に無視する。
-# そのためグローバル側にフック名が存在しないと、リポジトリ固有のフックが
-# 実行される機会そのものが消える。git lfs install が入れる pre-push などが
-# 動かなくなるため、クライアント側のフックは全て base.sh へ向けてある。
+# グローバル側にフック名が存在しないと、リポジトリ固有のフックが
+# 実行される機会そのものが消える (git lfs install が入れる pre-push など)。
 R=$(new_repo forward)
 mkdir -p "$TMPROOT/forward-bare" "$R/.git/hooks"
 git init -q --bare "$TMPROOT/forward-bare/r.git"
