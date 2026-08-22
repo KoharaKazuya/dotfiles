@@ -110,6 +110,9 @@ jobs:
         run: |
           mkdir -p "$HOME/projects"
           cp -a "$GITHUB_WORKSPACE" "$HOME/projects/dotfiles"
+          # 本来の clone と同じく、実行ユーザーが所有する状態にする
+          # (所有者が異なると git が dubious ownership として拒否する)
+          chown -R "$(id -u):$(id -g)" "$HOME/projects/dotfiles"
 
       - name: Run install.sh
         env:
