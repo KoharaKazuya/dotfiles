@@ -11,8 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # gitleaks には git-secrets の --pre_commit_hook のような専用の
+      # エントリポイントが無く、サブコマンドがバージョンで変わる。
+      # 実際に入れて呼び出しを検証する
+      - name: Install gitleaks
+        env:
+          GITLEAKS_VERSION: 8.28.0
+        run: |
+          set -eu
+          curl -sSLf -o /tmp/gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          mkdir -p "$HOME/.local/bin"
+          tar xzf /tmp/gitleaks.tar.gz -C "$HOME/.local/bin" gitleaks
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/gitleaks" version
+
       # /bin/sh が dash である環境で動くことが要件なので dash で実行する
+      # REQUIRE_GITLEAKS で gitleaks のテストのスキップを許さない
       - name: Run hook tests
+        env:
+          REQUIRE_GITLEAKS: "1"
         run: sh git-hooks/test.sh
 
   shellcheck:

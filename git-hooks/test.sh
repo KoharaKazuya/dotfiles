@@ -113,6 +113,39 @@ git -C "$R" add evil.c
 chk "GIT_HOOKS_IGNORE_UNICODE で無効化できる" 0 "$?"
 
 # ---------------------------------------------------------------------------
+echo "== pre-commit: gitleaks =="
+# ---------------------------------------------------------------------------
+# gitleaks には git-secrets の --pre_commit_hook のような専用の
+# エントリポイントが無く、サブコマンドが v8.19 で変わっている。
+# 双方の呼び出しが実際に効くことを固定する。
+if command -v gitleaks >/dev/null 2>&1; then
+  # 検出されることが確認できている形式 (実在しないダミー)
+  AWSKEY=AKIAIOSFODNN7EXAMPLF
+
+  R=$(new_repo gitleaks_secret)
+  printf '%s\n' "$AWSKEY" > "$R/cfg.txt"
+  git -C "$R" add cfg.txt
+  ( cd "$R" && git commit -q -m "feat: cfg" >/dev/null 2>&1 )
+  chk "秘匿情報を含むコミットが失敗する" 1 "$?"
+
+  R=$(new_repo gitleaks_clean)
+  echo 'int main(void) { return 0; }' > "$R/ok.c"
+  git -C "$R" add ok.c
+  out=$( cd "$R" && git commit -m "feat: ok" 2>&1 )
+  chk "秘匿情報が無ければ通る" 0 "$?"
+  # 通常のコミットで gitleaks の情報ログが漏れないこと
+  case "$out" in
+    *"no leaks found"*) ng "検出が無いときは黙る" ;;
+    *)                  ok "検出が無いときは黙る" ;;
+  esac
+elif [ -n "${REQUIRE_GITLEAKS:-}" ]; then
+  # CI ではカバレッジが黙って落ちないよう、スキップを失敗として扱う
+  ng "gitleaks がインストールされていない (REQUIRE_GITLEAKS 指定時は必須)"
+else
+  echo "  skip (gitleaks 未インストール)"
+fi
+
+# ---------------------------------------------------------------------------
 echo "== post-merge: 取り込んだ差分の「中身」を検査すること =="
 # ---------------------------------------------------------------------------
 R=$(new_repo postmerge)
