@@ -21,7 +21,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # 既存の ~/.gitconfig などに影響されないよう、まっさらな HOME で実行する
       - name: Set up a fresh HOME
@@ -104,7 +104,7 @@ jobs:
           apt-get update
           apt-get install -y git curl ca-certificates sudo locales
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Place the working tree where install.sh expects it
         run: |

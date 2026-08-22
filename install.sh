@@ -22,7 +22,7 @@ if [ "${REMOTE_CONTAINERS:-}" = true ] || [ "${CODESPACES:-}" = true ]; then
       if [ "$(uname -m)" = "amd64" ] || [ "$(uname -m)" = "x86_64" ]; then ARCH=amd64; fi
       if [ "$(uname -m)" = "arm64" ] || [ "$(uname -m)" = "aarch64" ]; then ARCH=arm64; fi
       if [ -n "$ARCH" ]; then
-        curl -sSLf -o /tmp/git-delta.deb https://github.com/dandavison/delta/releases/download/0.16.5/git-delta_0.16.5_$ARCH.deb
+        curl -sSLf -o /tmp/git-delta.deb https://github.com/dandavison/delta/releases/download/0.19.2/git-delta_0.19.2_$ARCH.deb
         sudo apt-get install -y /tmp/git-delta.deb
       fi
     fi
