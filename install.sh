@@ -38,7 +38,15 @@ if [ ! -d $CONTAINER/dotfiles ]; then
 fi
 cd $CONTAINER/dotfiles
 
-for dotfile in $(git ls-files | grep '^\.' | sed -e 's/\/.*//' | uniq)
+# git ls-files が失敗しても for は空回りするだけなので、
+# 何もインストールせずに成功したように見えてしまう。先に取り出して確認する
+dotfiles=$(git ls-files | grep '^\.' | sed -e 's/\/.*//' | uniq)
+if [ -z "$dotfiles" ]; then
+  echo "error: dotfiles を列挙できませんでした ($CONTAINER/dotfiles)" >&2
+  exit 1
+fi
+
+for dotfile in $dotfiles
 do
   if [ -e ~/$dotfile ]; then
     if [ "$(readlink ~/$dotfile)" != "$CONTAINER/dotfiles/$dotfile" ]; then
